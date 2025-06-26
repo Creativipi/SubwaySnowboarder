@@ -43,7 +43,8 @@ entity ActorMgmt is
            i_ch_setpos : in STD_LOGIC;
            i_ch_movepos : in STD_LOGIC;
            i_ch_tile_id : in STD_LOGIC;
-           i_ch_flip : in STD_LOGIC;
+           i_ch_flipX : in STD_LOGIC;
+           i_ch_flipY : in STD_LOGIC;
            i_clk : in STD_LOGIC;
            o_tile_id : out STD_LOGIC_VECTOR (3 downto 0);
            o_flip_x : out STD_LOGIC;
