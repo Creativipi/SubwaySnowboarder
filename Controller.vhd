@@ -70,7 +70,47 @@ end Controller;
 
 architecture Behavioral of Controller is
 
+    signal opcode : std_logic_vector(3 downto 0);
+    -- "0000" => MoveView
+    -- "0001" => SetView
+    -- "0010" => MoveActPos
+    -- "0011" => SetActPos
+    -- "0100" => SetActTile
+    -- "0101" => SetBackTile
 begin
 
+    opcode <= i_instruction(31 downto 28);      -- ActorMgmt control TO VERIFY IN SECOND ITERATION
+
+    -- Viewport
+    o_ch_moveoffset <= '1' when opcode = "0000" else '0'; -- MoveView
+    o_ch_setoffset  <= '1' when opcode = "0001" else '0'; -- SetView
+    o_x_newoffset   <= i_instruction(27 downto 18) when opcode = "0000" or opcode = "0001" else (others => '0');
+    o_y_newoffset   <= i_instruction(17 downto 8)  when opcode = "0000" or opcode = "0001" else (others => '0');
+
+    -- ActorMgmt TO VERIFY IN SECOND ITERATION
+    --o_AM_act_id     <= i_instruction(27 downto 25) when opcode = "0010" or opcode = "0011" or opcode = "0100" else (others => '0');
+    --o_AM_ch_movepos <= i_instruction(24) when opcode = "0010" else '0';
+    --o_AM_ch_setpos  <= i_instruction(24) when opcode = "0011" else '0';
+    --o_AM_ch_tile_id <= i_instruction(24) when opcode = "0100" else '0';
+    --o_AM_ch_flip    <= '1' when opcode = "0010" or opcode = "0011" or opcode = "0100" else '0';
+    --o_AM_newpos_x   <= i_instruction(23 downto 14) when opcode = "0010" or opcode = "0011" else (others => '0');
+    --o_AM_newpos_y   <= i_instruction(13 downto 4)  when opcode = "0010" or opcode = "0011" else (others => '0');
+    --o_AM_tile_id    <= i_instruction(23 downto 20) when opcode = "0100" else (others => '0');
+    --o_AM_flip_x     <= i_instruction(19) when opcode = "0100" else i_instruction(3) when opcode = "0010" or opcode = "0011" else '0';
+    --o_AM_flip_y     <= i_instruction(18) when opcode = "0100" else i_instruction(2) when opcode = "0010" or opcode = "0011" else '0';
+
+    -- BackMgmt
+    o_BM_tile_id    <= i_instruction(27 downto 23) when opcode = "0101" else (others => '0');
+    o_BM_ch_tile_id <= i_instruction(22) when opcode = "0101" else '0';
+    o_BM_row        <= i_instruction(21 downto 15) when opcode = "0101" else (others => '0');
+    o_BM_col        <= i_instruction(14 downto 8)  when opcode = "0101" else (others => '0');
+    o_BM_ch_flip    <= i_instruction(7) when opcode = "0101" else '0';
+    o_BM_flip_y     <= i_instruction(6) when opcode = "0101" else '0';
+    
+    -- Others
+    --o_MBA_act_en    <= '0'; -- if not yet used
+    --o_CC_color_id   <= (others => '0');
+    --o_CC_new_RBG    <= (others => '0');
+    --o_CC_ch_color   <= '0';
 
 end Behavioral;

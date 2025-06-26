@@ -104,6 +104,8 @@ begin
                     r_couleur_14 <= i_new_RBG;
                 when "1111" => -- 15
                     r_couleur_15 <= i_new_RBG;
+                when others =>
+                    null;
             end case;
         end if;
     end if;
@@ -142,6 +144,8 @@ begin
             o_RBG <= r_couleur_14;
         when "1111" => -- 15
             o_RBG <= r_couleur_15;
+        when others =>
+                    null;
     end case;
     
     
