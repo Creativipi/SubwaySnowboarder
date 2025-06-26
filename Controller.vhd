@@ -70,7 +70,8 @@ end Controller;
 
 architecture Behavioral of Controller is
 
-    signal opcode : std_logic_vector(3 downto 0);
+    signal current_instruction : STD_LOGIC_VECTOR(31 downto 0);
+    signal opcode : STD_LOGIC_VECTOR(3 downto 0);
     -- "0000" => MoveView
     -- "0001" => SetView
     -- "0010" => MoveActPos
@@ -79,13 +80,28 @@ architecture Behavioral of Controller is
     -- "0101" => SetBackTile
 begin
 
-    opcode <= i_instruction(31 downto 28);      -- ActorMgmt control TO VERIFY IN SECOND ITERATION
+process(i_clk)
+    begin
+        if rising_edge(i_clk) then
+            current_instruction <= i_instruction;
+        end if;
+    end process;
+    
+    opcode <= current_instruction(31 downto 28);      -- ActorMgmt control TO VERIFY IN SECOND ITERATION
 
     -- Viewport
     o_ch_moveoffset <= '1' when opcode = "0000" else '0'; -- MoveView
     o_ch_setoffset  <= '1' when opcode = "0001" else '0'; -- SetView
-    o_x_newoffset   <= i_instruction(27 downto 18) when opcode = "0000" or opcode = "0001" else (others => '0');
-    o_y_newoffset   <= i_instruction(17 downto 8)  when opcode = "0000" or opcode = "0001" else (others => '0');
+    o_x_newoffset   <= current_instruction(27 downto 18) when opcode = "0000" or opcode = "0001" else (others => '0');
+    o_y_newoffset   <= current_instruction(17 downto 8)  when opcode = "0000" or opcode = "0001" else (others => '0');
+
+    -- BackMgmt
+    o_BM_tile_id    <= current_instruction(27 downto 23) when opcode = "0101" else (others => '0');
+    o_BM_ch_tile_id <= current_instruction(22) when opcode = "0101" else '0';
+    o_BM_row        <= current_instruction(21 downto 15) when opcode = "0101" else (others => '0');
+    o_BM_col        <= current_instruction(14 downto 8)  when opcode = "0101" else (others => '0');
+    o_BM_ch_flip    <= current_instruction(7) when opcode = "0101" else '0';
+    o_BM_flip_y     <= current_instruction(6) when opcode = "0101" else '0';
 
     -- ActorMgmt TO VERIFY IN SECOND ITERATION
     --o_AM_act_id     <= i_instruction(27 downto 25) when opcode = "0010" or opcode = "0011" or opcode = "0100" else (others => '0');
@@ -98,14 +114,6 @@ begin
     --o_AM_tile_id    <= i_instruction(23 downto 20) when opcode = "0100" else (others => '0');
     --o_AM_flip_x     <= i_instruction(19) when opcode = "0100" else i_instruction(3) when opcode = "0010" or opcode = "0011" else '0';
     --o_AM_flip_y     <= i_instruction(18) when opcode = "0100" else i_instruction(2) when opcode = "0010" or opcode = "0011" else '0';
-
-    -- BackMgmt
-    o_BM_tile_id    <= i_instruction(27 downto 23) when opcode = "0101" else (others => '0');
-    o_BM_ch_tile_id <= i_instruction(22) when opcode = "0101" else '0';
-    o_BM_row        <= i_instruction(21 downto 15) when opcode = "0101" else (others => '0');
-    o_BM_col        <= i_instruction(14 downto 8)  when opcode = "0101" else (others => '0');
-    o_BM_ch_flip    <= i_instruction(7) when opcode = "0101" else '0';
-    o_BM_flip_y     <= i_instruction(6) when opcode = "0101" else '0';
     
     -- Others
     --o_MBA_act_en    <= '0'; -- if not yet used
