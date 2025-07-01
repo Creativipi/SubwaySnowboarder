@@ -47,8 +47,8 @@ end Viewport;
 
 architecture Behavioral of Viewport is
 
-    signal r_offset_x : std_logic_vector(9 downto 0); --"R" pour registre
-    signal r_offset_y : std_logic_vector(9 downto 0); --"R" pour registre
+    signal r_offset_x : std_logic_vector(9 downto 0) := (others=> '0'); --"R" pour registre
+    signal r_offset_y : std_logic_vector(9 downto 0) := (others=> '0'); --"R" pour registre
     
 begin
 
