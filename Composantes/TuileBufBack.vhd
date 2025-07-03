@@ -49,7 +49,7 @@ architecture Behavioral of TuileBufBack is
         );
     end component;
     
-    function reverse_any_vector_by_blocks_of_4 (a: in std_logic_vector)
+    function reverse_32bit_vector_by_blocks_of_4 (a: in std_logic_vector)
     return std_logic_vector is
         variable norm_a : std_logic_vector(31 downto 0);
         variable result: std_logic_vector(31 downto 0);
@@ -77,14 +77,14 @@ begin
         matrix_8x8 => selectedTile
     );
     
-    temp_matrix(255 downto 224) <= reverse_any_vector_by_blocks_of_4(selectedTile(255 downto 224)) when i_flip_y = '1' else selectedTile(255 downto 224);
-    temp_matrix(223 downto 192) <= reverse_any_vector_by_blocks_of_4(selectedTile(223 downto 192)) when i_flip_y = '1' else selectedTile(223 downto 192);
-    temp_matrix(191 downto 160) <= reverse_any_vector_by_blocks_of_4(selectedTile(191 downto 160)) when i_flip_y = '1' else selectedTile(191 downto 160);
-    temp_matrix(159 downto 128) <= reverse_any_vector_by_blocks_of_4(selectedTile(159 downto 128)) when i_flip_y = '1' else selectedTile(159 downto 128);
-    temp_matrix(127 downto 96) <= reverse_any_vector_by_blocks_of_4(selectedTile(127 downto 96)) when i_flip_y = '1' else selectedTile(127 downto 96);
-    temp_matrix(95 downto 64) <= reverse_any_vector_by_blocks_of_4(selectedTile(95 downto 64)) when i_flip_y = '1' else selectedTile(95 downto 64);
-    temp_matrix(63 downto 32) <= reverse_any_vector_by_blocks_of_4(selectedTile(63 downto 32)) when i_flip_y = '1' else selectedTile(63 downto 32);
-    temp_matrix(31 downto 0) <= reverse_any_vector_by_blocks_of_4(selectedTile(31 downto 0)) when i_flip_y = '1' else selectedTile(31 downto 0);
+    temp_matrix(255 downto 224) <= reverse_32bit_vector_by_blocks_of_4(selectedTile(255 downto 224)) when i_flip_y = '1' else selectedTile(255 downto 224);
+    temp_matrix(223 downto 192) <= reverse_32bit_vector_by_blocks_of_4(selectedTile(223 downto 192)) when i_flip_y = '1' else selectedTile(223 downto 192);
+    temp_matrix(191 downto 160) <= reverse_32bit_vector_by_blocks_of_4(selectedTile(191 downto 160)) when i_flip_y = '1' else selectedTile(191 downto 160);
+    temp_matrix(159 downto 128) <= reverse_32bit_vector_by_blocks_of_4(selectedTile(159 downto 128)) when i_flip_y = '1' else selectedTile(159 downto 128);
+    temp_matrix(127 downto 96) <= reverse_32bit_vector_by_blocks_of_4(selectedTile(127 downto 96)) when i_flip_y = '1' else selectedTile(127 downto 96);
+    temp_matrix(95 downto 64) <= reverse_32bit_vector_by_blocks_of_4(selectedTile(95 downto 64)) when i_flip_y = '1' else selectedTile(95 downto 64);
+    temp_matrix(63 downto 32) <= reverse_32bit_vector_by_blocks_of_4(selectedTile(63 downto 32)) when i_flip_y = '1' else selectedTile(63 downto 32);
+    temp_matrix(31 downto 0) <= reverse_32bit_vector_by_blocks_of_4(selectedTile(31 downto 0)) when i_flip_y = '1' else selectedTile(31 downto 0);
         
     o_color_code <= temp_matrix(255 - TO_INTEGER(unsigned(i_pix_y & i_pix_x & "00")) downto 255 - TO_INTEGER(unsigned(i_pix_y & i_pix_x & "00")) - 3);
 
