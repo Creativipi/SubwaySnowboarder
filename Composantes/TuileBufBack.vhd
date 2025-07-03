@@ -85,7 +85,11 @@ begin
     temp_matrix(95 downto 64) <= reverse_32bit_vector_by_blocks_of_4(selectedTile(95 downto 64)) when i_flip_y = '1' else selectedTile(95 downto 64);
     temp_matrix(63 downto 32) <= reverse_32bit_vector_by_blocks_of_4(selectedTile(63 downto 32)) when i_flip_y = '1' else selectedTile(63 downto 32);
     temp_matrix(31 downto 0) <= reverse_32bit_vector_by_blocks_of_4(selectedTile(31 downto 0)) when i_flip_y = '1' else selectedTile(31 downto 0);
-        
-    o_color_code <= temp_matrix(255 - TO_INTEGER(unsigned(i_pix_y & i_pix_x & "00")) downto 255 - TO_INTEGER(unsigned(i_pix_y & i_pix_x & "00")) - 3);
+    
+    o_color_code(3) <= temp_matrix(255 - TO_INTEGER(unsigned(i_pix_y & i_pix_x & "00")));
+    o_color_code(2) <= temp_matrix(254 - TO_INTEGER(unsigned(i_pix_y & i_pix_x & "00")));
+    o_color_code(1) <= temp_matrix(253 - TO_INTEGER(unsigned(i_pix_y & i_pix_x & "00")));
+    o_color_code(0) <= temp_matrix(252 - TO_INTEGER(unsigned(i_pix_y & i_pix_x & "00")));
+--    o_color_code <= temp_matrix(255 - TO_INTEGER(unsigned(i_pix_y & i_pix_x & "00")) downto 255 - TO_INTEGER(unsigned(i_pix_y & i_pix_x & "00")) - 3);
 
 end Behavioral;
