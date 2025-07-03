@@ -42,39 +42,50 @@ end TuileBufBack;
 
 architecture Behavioral of TuileBufBack is
 
+    component TuileBackBuffRegister is
+    port (
+        i_tile_id : in std_logic_vector (4 downto 0);
+        matrix_8x8 : out std_logic_vector (255 downto 0)
+        );
+    end component;
+    
+    function reverse_any_vector_by_blocks_of_4 (a: in std_logic_vector)
+    return std_logic_vector is
+        variable norm_a : std_logic_vector(31 downto 0);
+        variable result: std_logic_vector(31 downto 0);
+        variable i : integer := 31;
+    begin
+        for j in 0 to 31 loop
+            norm_a(j) := a(a'LOW + j);
+        end loop;
+    
+        while i >= 3 loop
+            result(i downto i - 3) := norm_a(31 - i + 3 downto 31 - i);
+            i := i - 4;
+        end loop;
+    return result;
+    end;
+
     signal selectedTile : std_logic_vector(255 downto 0);
+    signal temp_matrix : std_logic_vector(255 downto 0);
 
 begin
 
-    process(i_tile_id, i_flip_y, i_pix_x, i_pix_y)
-    variable temp_matrix : std_logic_vector(255 downto 0);
-    variable borneDepart : integer;
-    begin
-        if (i_flip_y = '1') then
-            temp_matrix(255 downto 240) := selectedTile(239 downto 224);
-            temp_matrix(239 downto 224) := selectedTile(255 downto 240);
-            temp_matrix(223 downto 208) := selectedTile(207 downto 192);
-            temp_matrix(207 downto 192) := selectedTile(223 downto 208);
-            temp_matrix(191 downto 176) := selectedTile(175 downto 160);
-            temp_matrix(175 downto 160) := selectedTile(191 downto 176);
-            temp_matrix(159 downto 144) := selectedTile(143 downto 128);
-            temp_matrix(143 downto 128) := selectedTile(159 downto 144);
-            temp_matrix(127 downto 112) := selectedTile(111 downto 196);
-            temp_matrix(111 downto 96) := selectedTile(127 downto 112);
-            temp_matrix(95 downto 80) := selectedTile(79 downto 64);
-            temp_matrix(79 downto 64) := selectedTile(95 downto 80);
-            temp_matrix(63 downto 48) := selectedTile(47 downto 32);
-            temp_matrix(47 downto 32) := selectedTile(63 downto 48);
-            temp_matrix(31 downto 16) := selectedTile(15 downto 0);
-            temp_matrix(15 downto 0) := selectedTile(31 downto 16);
-        else
-            temp_matrix := selectedTile;
-        end if;
-        
-        borneDepart := 255 - TO_INTEGER(unsigned(i_pix_y))*32 + TO_INTEGER(unsigned(i_pix_x))*4;
-        o_color_code <= temp_matrix(borneDepart downto borneDepart - 3);
-        
-    end process;
+    TuileBackBuffRegister_0 : component TuileBackBuffRegister
+    port map(
+        i_tile_id => i_tile_id,
+        matrix_8x8 => selectedTile
+    );
     
+    temp_matrix(255 downto 224) <= reverse_any_vector_by_blocks_of_4(selectedTile(255 downto 224)) when i_flip_y = '1' else selectedTile(255 downto 224);
+    temp_matrix(223 downto 192) <= reverse_any_vector_by_blocks_of_4(selectedTile(223 downto 192)) when i_flip_y = '1' else selectedTile(223 downto 192);
+    temp_matrix(191 downto 160) <= reverse_any_vector_by_blocks_of_4(selectedTile(191 downto 160)) when i_flip_y = '1' else selectedTile(191 downto 160);
+    temp_matrix(159 downto 128) <= reverse_any_vector_by_blocks_of_4(selectedTile(159 downto 128)) when i_flip_y = '1' else selectedTile(159 downto 128);
+    temp_matrix(127 downto 96) <= reverse_any_vector_by_blocks_of_4(selectedTile(127 downto 96)) when i_flip_y = '1' else selectedTile(127 downto 96);
+    temp_matrix(95 downto 64) <= reverse_any_vector_by_blocks_of_4(selectedTile(95 downto 64)) when i_flip_y = '1' else selectedTile(95 downto 64);
+    temp_matrix(63 downto 32) <= reverse_any_vector_by_blocks_of_4(selectedTile(63 downto 32)) when i_flip_y = '1' else selectedTile(63 downto 32);
+    temp_matrix(31 downto 0) <= reverse_any_vector_by_blocks_of_4(selectedTile(31 downto 0)) when i_flip_y = '1' else selectedTile(31 downto 0);
+        
+    o_color_code <= temp_matrix(255 - TO_INTEGER(unsigned(i_pix_y & i_pix_x & "00")) downto 255 - TO_INTEGER(unsigned(i_pix_y & i_pix_x & "00")) - 3);
 
 end Behavioral;
