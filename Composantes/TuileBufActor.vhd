@@ -44,5 +44,5 @@ architecture Behavioral of TuileBufActor is
 
 begin
 
-
+o_color_code <= "0000";
 end Behavioral;

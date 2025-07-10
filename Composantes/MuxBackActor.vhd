@@ -43,12 +43,6 @@ architecture Behavioral of MuxBackActor is
 
 begin
 
---    process(i_clk)
---    begin
---        if (rising_edge(i_clk)) then
-    o_color_code <= i_back_color_code;
---        end if;
---    end process;
-
+o_color_code <= i_back_color_code;
 
 end Behavioral;

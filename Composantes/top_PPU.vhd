@@ -32,9 +32,14 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity top_PPU is
-    Port ( FETCH : in STD_LOGIC_VECTOR (31 downto 0);
-           CLK : in STD_LOGIC;
-           HDMI : out STD_LOGIC_VECTOR (18 downto 0));
+    Port ( i_command : in STD_LOGIC_VECTOR (31 downto 0);
+           i_x : in STD_LOGIC_VECTOR (11 downto 0);
+           i_y : in STD_LOGIC_VECTOR (11 downto 0);
+           i_reset : in STD_LOGIC;
+           i_clk : in STD_LOGIC;
+           
+           o_dataPixel : out STD_LOGIC_VECTOR (23 downto 0);
+           o_dataValid : out STD_LOGIC);
 end top_PPU;
 
 architecture Behavioral of top_PPU is
@@ -66,8 +71,8 @@ component Controller is
     o_AM_ch_setpos : out STD_LOGIC;
     o_AM_ch_movepos : out STD_LOGIC;
     o_AM_ch_tile_id : out STD_LOGIC;
-    o_AM_ch_flipY : out STD_LOGIC;
     o_AM_ch_flipX : out STD_LOGIC;
+    o_AM_ch_flipY : out STD_LOGIC;
     --MuxBackActor
     o_MBA_act_en : out STD_LOGIC;
     --ColorConvertor
@@ -114,7 +119,7 @@ component BackMgmt is
     i_tile_id : in STD_LOGIC_VECTOR (4 downto 0);
     i_flip_y : in STD_LOGIC;
     i_ch_tile_id : in STD_LOGIC;
-    i_ch_flip : in STD_LOGIC;
+    i_ch_flipY : in STD_LOGIC;
     i_clk : in STD_LOGIC;
     o_tile_id : out STD_LOGIC_VECTOR (4 downto 0);
     o_flip_y : out STD_LOGIC;
@@ -208,7 +213,7 @@ end component;
     signal Cont_BM_tile_id : STD_LOGIC_VECTOR (4 downto 0);
     signal Cont_BM_flip_y : STD_LOGIC;
     signal Cont_BM_ch_tile_id : STD_LOGIC;
-    signal Cont_BM_ch_flipY : STD_LOGIC;
+    signal Cont_BM_ch_flip : STD_LOGIC;
     --ActorMgmt
     signal Cont_AM_act_id : STD_LOGIC_VECTOR (2 downto 0);
     signal Cont_AM_newpos_x : STD_LOGIC_VECTOR (9 downto 0);
@@ -219,8 +224,8 @@ end component;
     signal Cont_AM_ch_setpos : STD_LOGIC;
     signal Cont_AM_ch_movepos : STD_LOGIC;
     signal Cont_AM_ch_tile_id : STD_LOGIC;
-    signal Cont_AM_ch_flipX : STD_LOGIC;
-    signal Cont_AM_ch_flipY : STD_LOGIC;
+    signal Cont_AM_ch_flip_X : STD_LOGIC;
+    signal Cont_AM_ch_flip_Y : STD_LOGIC;
     --MuxBackActor
     signal Cont_MBA_act_en : STD_LOGIC;
     --ColorConvertor
@@ -263,18 +268,17 @@ end component;
     --Sortie MuxBackAct
     signal MBA_color_code : std_logic_vector(3 downto 0);
     
-    --Sortie ColorConverter
-    signal CC_RBG : std_logic_vector(23 downto 0);
-    
-    --Sortie VideoProcessingSystem
-    --ssignal VPS_HDMI : std_logic_vector(18 downto 0);
+    --Sortie ColorConvertor
+
 
 begin
 
+o_dataValid <= '1';
+
 Controller_0: component Controller
      port map (
-      i_instruction => FETCH,
-      i_clk => CLK,
+      i_instruction => i_command,
+      i_clk => i_clk,
       --Viewport
       o_ch_setoffset => Cont_ch_setoffset,
       o_ch_moveoffset => Cont_ch_moveoffset,
@@ -286,7 +290,7 @@ Controller_0: component Controller
       o_BM_tile_id => Cont_BM_tile_id,
       o_BM_flip_y => Cont_BM_flip_y,
       o_BM_ch_tile_id => Cont_BM_ch_tile_id,
-      o_BM_ch_flipY => Cont_BM_ch_flipY,
+      o_BM_ch_flipY => Cont_BM_ch_flip,
       --ActorMgmt
       o_AM_newpos_x => Cont_AM_newpos_x,
       o_AM_newpos_y => Cont_AM_newpos_y,
@@ -297,8 +301,8 @@ Controller_0: component Controller
       o_AM_ch_setpos => Cont_AM_ch_setpos,
       o_AM_ch_movepos => Cont_AM_ch_movepos,
       o_AM_ch_tile_id => Cont_AM_ch_tile_id,
-      o_AM_ch_flipX => Cont_AM_ch_flipX,
-      o_AM_ch_flipY => Cont_AM_ch_flipY,
+      o_AM_ch_flipX => Cont_AM_ch_flip_X,
+      o_AM_ch_flipY => Cont_AM_ch_flip_Y,
       --MuxBackActor
       o_MBA_act_en => Cont_MBA_act_en,
       --ColorConvertor
@@ -307,28 +311,15 @@ Controller_0: component Controller
       o_CC_ch_color => Cont_CC_ch_color
     );
     
-TestPatternGenerator_0: component TestPatternGenerator
-     port map ( 
-      i_clk => CLK,
-      --V out? V
-      i_rstn => TPG_rstn,
-      i_axis_tready => TPG_axis_tready,
-      o_axis_tuser => TPG_axis_tuser,
-      o_axis_tlast => TPG_axis_tlast,
-      o_axis_tvalid => TPG_axis_tvalid,
-      o_x => TPG_x,
-      o_y => TPG_y
-    );
-    
 Viewport_0: component Viewport
      port map (
-      i_x => TPG_x,
-      i_y => TPG_y,
+      i_x => i_x(9 downto 0),
+      i_y => i_y(8 downto 0),
       i_ch_setoffset => Cont_ch_setoffset,
       i_ch_moveoffset => Cont_ch_moveoffset,
       i_x_newoffset => Cont_x_newoffset,
       i_y_newoffset => Cont_y_newoffset,
-      i_clk => CLK,
+      i_clk => i_clk,
       o_x_offseted => View_x,
       o_y_offseted => View_y
     );
@@ -342,8 +333,8 @@ BackMgmt_0: component BackMgmt
       i_tile_id => Cont_BM_tile_id,
       i_flip_y => Cont_BM_flip_y,
       i_ch_tile_id => Cont_BM_ch_tile_id,
-      i_ch_flip => Cont_BM_ch_flipY,
-      i_clk => CLK,
+      i_ch_flipY => Cont_BM_ch_flip,
+      i_clk => i_clk,
       o_tile_id => BM_tile_id,
       o_flip_y => BM_flip_y,
       o_pix_x => BM_pix_x,
@@ -372,9 +363,9 @@ ActorMgmt_0 : component ActorMgmt
       i_ch_setpos => Cont_AM_ch_setpos,
       i_ch_movepos => Cont_AM_ch_movepos,
       i_ch_tile_id => Cont_AM_ch_tile_id,
-      i_ch_flipX => Cont_AM_ch_flipX,
-      i_ch_flipY => Cont_AM_ch_flipY,
-      i_clk => CLK,
+      i_ch_flipX => Cont_AM_ch_flip_x,
+      i_ch_flipY => Cont_AM_ch_flip_y,
+      i_clk => i_clk,
       o_tile_id => AM_tile_id,
       o_flip_x  => AM_flip_x,
       o_flip_y  => AM_flip_y,
@@ -397,7 +388,7 @@ MuxBackActor_0 : component MuxBackActor
       i_back_color_code => TBB_color_code,
       i_act_color_code => TBA_color_code,
       i_act_en => Cont_MBA_act_en,
-      i_clk => CLK,
+      i_clk => i_clk,
       o_color_code => MBA_color_code
     );
     
@@ -407,14 +398,8 @@ ColorConvertor_0 : component ColorConvertor
       i_color_id => Cont_CC_color_id,
       i_new_RBG => Cont_CC_new_RBG,
       i_ch_color => Cont_CC_ch_color,
-      i_clk => CLK,
-      o_RBG => CC_RBG
-    );
-
-VideoProcessingSystem_0 : component VideoProcessingSystem
-     port map(
-      i_video_input => CC_RBG,
-      HDMI => HDMI
+      i_clk => i_clk,
+      o_RBG => o_dataPixel
     );
 
 end Behavioral;
