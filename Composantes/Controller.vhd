@@ -45,7 +45,7 @@ entity Controller is
            o_BM_tile_id : out STD_LOGIC_VECTOR (4 downto 0);
            o_BM_flip_y : out STD_LOGIC;
            o_BM_ch_tile_id : out STD_LOGIC;
-           o_BM_ch_flipY : out STD_LOGIC;
+           o_BM_ch_flip_y : out STD_LOGIC;
            --ActorMgmt
            o_AM_act_id : out STD_LOGIC_VECTOR (2 downto 0);
            o_AM_newpos_x : out STD_LOGIC_VECTOR (9 downto 0);
@@ -56,8 +56,8 @@ entity Controller is
            o_AM_ch_setpos : out STD_LOGIC;
            o_AM_ch_movepos : out STD_LOGIC;
            o_AM_ch_tile_id : out STD_LOGIC;
-           o_AM_ch_flipX: out STD_LOGIC;
-           o_AM_ch_flipY : out STD_LOGIC;
+           o_AM_ch_flip_x: out STD_LOGIC;
+           o_AM_ch_flip_y : out STD_LOGIC;
            --MuxBackActor
            o_MBA_act_en : out STD_LOGIC;
            --ColorConvertor
@@ -101,8 +101,8 @@ process(i_clk)
     o_BM_ch_tile_id <= current_instruction(22) when opcode = "0101" else '0';
     o_BM_row        <= current_instruction(21 downto 15) when opcode = "0101" else (others => '0');
     o_BM_col        <= current_instruction(14 downto 8)  when opcode = "0101" else (others => '0');
-    o_BM_ch_flipY    <= current_instruction(1) when opcode = "0101" else '0';
-    o_BM_flip_Y     <= current_instruction(0) when opcode = "0101" else '0';
+    o_BM_ch_flip_y  <= current_instruction(1) when opcode = "0101" else '0';
+    o_BM_flip_y     <= current_instruction(0) when opcode = "0101" else '0';
 
     -- ActorMgmt TO VERIFY IN SECOND ITERATION
     o_AM_act_id     <= current_instruction(27 downto 25) when opcode = "0010" or opcode = "0011" or opcode = "0100" else (others => '0');
@@ -112,10 +112,10 @@ process(i_clk)
     o_AM_newpos_x   <= current_instruction(23 downto 14) when opcode = "0010" or opcode = "0011" else (others => '0');
     o_AM_newpos_y   <= current_instruction(13 downto 4)  when opcode = "0010" or opcode = "0011" else (others => '0');
     o_AM_tile_id    <= current_instruction(23 downto 20) when opcode = "0100" else (others => '0');
-    o_AM_ch_flipX   <= current_instruction(3) when opcode = "0100" or opcode = "0011" or opcode = "0010" else '0';
-    o_AM_ch_flipY   <= current_instruction(2) when opcode = "0100" or opcode = "0011" or opcode = "0010" else '0';
-    o_AM_flip_X     <= current_instruction(1) when opcode = "0100" or opcode = "0011" or opcode = "0010" else '0';
-    o_AM_flip_Y     <= current_instruction(0) when opcode = "0100" or opcode = "0011" or opcode = "0010" else '0';
+    o_AM_ch_flip_x  <= current_instruction(3) when opcode = "0100" or opcode = "0011" or opcode = "0010" else '0';
+    o_AM_ch_flip_y  <= current_instruction(2) when opcode = "0100" or opcode = "0011" or opcode = "0010" else '0';
+    o_AM_flip_x     <= current_instruction(1) when opcode = "0100" or opcode = "0011" or opcode = "0010" else '0';
+    o_AM_flip_y     <= current_instruction(0) when opcode = "0100" or opcode = "0011" or opcode = "0010" else '0';
     -- Others
     --o_MBA_act_en    <= '0'; -- if not yet used
     --o_CC_color_id   <= (others => '0');
