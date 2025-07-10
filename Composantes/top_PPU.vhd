@@ -59,7 +59,7 @@ component Controller is
     o_BM_tile_id : out STD_LOGIC_VECTOR (4 downto 0);
     o_BM_flip_y : out STD_LOGIC;
     o_BM_ch_tile_id : out STD_LOGIC;
-    o_BM_ch_flipY : out STD_LOGIC;
+    o_BM_ch_flip_y : out STD_LOGIC;
     --ActorMgmt
     o_AM_newpos_x : out STD_LOGIC_VECTOR (9 downto 0);
     o_AM_newpos_y : out STD_LOGIC_VECTOR (9 downto 0);
@@ -71,8 +71,8 @@ component Controller is
     o_AM_ch_setpos : out STD_LOGIC;
     o_AM_ch_movepos : out STD_LOGIC;
     o_AM_ch_tile_id : out STD_LOGIC;
-    o_AM_ch_flipX : out STD_LOGIC;
-    o_AM_ch_flipY : out STD_LOGIC;
+    o_AM_ch_flip_x : out STD_LOGIC;
+    o_AM_ch_flip_y : out STD_LOGIC;
     --MuxBackActor
     o_MBA_act_en : out STD_LOGIC;
     --ColorConvertor
@@ -82,19 +82,6 @@ component Controller is
   );
 end component;
 
-
-component TestPatternGenerator is
-  port ( 
-    i_clk : in std_logic;
-    i_rstn : in std_logic;
-    i_axis_tready : in std_logic; -- input (1 when you are ready to render, 0 to stall the render)
-    o_axis_tuser : out std_logic; -- start of frame
-    o_axis_tlast : out std_logic; -- end of frame
-    o_axis_tvalid : out std_logic; -- outputting valid data
-    o_x : out std_logic_vector (9 downto 0);
-    o_y : out std_logic_vector (8 downto 0)
-  );
-end component;
 
 component Viewport is
   port (
@@ -119,7 +106,7 @@ component BackMgmt is
     i_tile_id : in STD_LOGIC_VECTOR (4 downto 0);
     i_flip_y : in STD_LOGIC;
     i_ch_tile_id : in STD_LOGIC;
-    i_ch_flipY : in STD_LOGIC;
+    i_ch_flip_y : in STD_LOGIC;
     i_clk : in STD_LOGIC;
     o_tile_id : out STD_LOGIC_VECTOR (4 downto 0);
     o_flip_y : out STD_LOGIC;
@@ -151,8 +138,8 @@ component ActorMgmt is
     i_ch_setpos : in STD_LOGIC;
     i_ch_movepos : in STD_LOGIC;
     i_ch_tile_id : in STD_LOGIC;
-    i_ch_flipX : in STD_LOGIC;
-    i_ch_flipY : in STD_LOGIC;
+    i_ch_flip_x : in STD_LOGIC;
+    i_ch_flip_y : in STD_LOGIC;
     i_clk : in STD_LOGIC;
     o_tile_id : out STD_LOGIC_VECTOR (3 downto 0);
     o_flip_x : out STD_LOGIC;
@@ -178,7 +165,6 @@ component MuxBackActor is
     i_back_color_code : in STD_LOGIC_VECTOR (3 downto 0);
     i_act_color_code : in STD_LOGIC_VECTOR (3 downto 0);
     i_act_en : in STD_LOGIC;
-    i_clk : in STD_LOGIC;
     o_color_code : out STD_LOGIC_VECTOR (3 downto 0)
   );
 end component;
@@ -194,13 +180,6 @@ component ColorConvertor is
   );
 end component;
 
-component VideoProcessingSystem is
-  port (
-    i_video_input : in STD_LOGIC_VECTOR (23 downto 0);
-    HDMI : out STD_LOGIC_VECTOR (18 downto 0)
-  );
-end component;
-
     --Sorties Controller
     --Viewport
     signal Cont_ch_setoffset : STD_LOGIC;
@@ -213,7 +192,7 @@ end component;
     signal Cont_BM_tile_id : STD_LOGIC_VECTOR (4 downto 0);
     signal Cont_BM_flip_y : STD_LOGIC;
     signal Cont_BM_ch_tile_id : STD_LOGIC;
-    signal Cont_BM_ch_flip : STD_LOGIC;
+    signal Cont_BM_ch_flip_y : STD_LOGIC;
     --ActorMgmt
     signal Cont_AM_act_id : STD_LOGIC_VECTOR (2 downto 0);
     signal Cont_AM_newpos_x : STD_LOGIC_VECTOR (9 downto 0);
@@ -224,8 +203,8 @@ end component;
     signal Cont_AM_ch_setpos : STD_LOGIC;
     signal Cont_AM_ch_movepos : STD_LOGIC;
     signal Cont_AM_ch_tile_id : STD_LOGIC;
-    signal Cont_AM_ch_flip_X : STD_LOGIC;
-    signal Cont_AM_ch_flip_Y : STD_LOGIC;
+    signal Cont_AM_ch_flip_x : STD_LOGIC;
+    signal Cont_AM_ch_flip_y : STD_LOGIC;
     --MuxBackActor
     signal Cont_MBA_act_en : STD_LOGIC;
     --ColorConvertor
@@ -290,7 +269,7 @@ Controller_0: component Controller
       o_BM_tile_id => Cont_BM_tile_id,
       o_BM_flip_y => Cont_BM_flip_y,
       o_BM_ch_tile_id => Cont_BM_ch_tile_id,
-      o_BM_ch_flipY => Cont_BM_ch_flip,
+      o_BM_ch_flip_y => Cont_BM_ch_flip_y,
       --ActorMgmt
       o_AM_newpos_x => Cont_AM_newpos_x,
       o_AM_newpos_y => Cont_AM_newpos_y,
@@ -301,8 +280,8 @@ Controller_0: component Controller
       o_AM_ch_setpos => Cont_AM_ch_setpos,
       o_AM_ch_movepos => Cont_AM_ch_movepos,
       o_AM_ch_tile_id => Cont_AM_ch_tile_id,
-      o_AM_ch_flipX => Cont_AM_ch_flip_X,
-      o_AM_ch_flipY => Cont_AM_ch_flip_Y,
+      o_AM_ch_flip_x => Cont_AM_ch_flip_x,
+      o_AM_ch_flip_y => Cont_AM_ch_flip_y,
       --MuxBackActor
       o_MBA_act_en => Cont_MBA_act_en,
       --ColorConvertor
@@ -333,7 +312,7 @@ BackMgmt_0: component BackMgmt
       i_tile_id => Cont_BM_tile_id,
       i_flip_y => Cont_BM_flip_y,
       i_ch_tile_id => Cont_BM_ch_tile_id,
-      i_ch_flipY => Cont_BM_ch_flip,
+      i_ch_flip_y => Cont_BM_ch_flip_y,
       i_clk => i_clk,
       o_tile_id => BM_tile_id,
       o_flip_y => BM_flip_y,
@@ -363,8 +342,8 @@ ActorMgmt_0 : component ActorMgmt
       i_ch_setpos => Cont_AM_ch_setpos,
       i_ch_movepos => Cont_AM_ch_movepos,
       i_ch_tile_id => Cont_AM_ch_tile_id,
-      i_ch_flipX => Cont_AM_ch_flip_x,
-      i_ch_flipY => Cont_AM_ch_flip_y,
+      i_ch_flip_x => Cont_AM_ch_flip_x,
+      i_ch_flip_y => Cont_AM_ch_flip_y,
       i_clk => i_clk,
       o_tile_id => AM_tile_id,
       o_flip_x  => AM_flip_x,
@@ -388,7 +367,6 @@ MuxBackActor_0 : component MuxBackActor
       i_back_color_code => TBB_color_code,
       i_act_color_code => TBA_color_code,
       i_act_en => Cont_MBA_act_en,
-      i_clk => i_clk,
       o_color_code => MBA_color_code
     );
     
