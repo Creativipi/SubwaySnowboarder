@@ -43,5 +43,6 @@ architecture Behavioral of MuxBackActor is
 
 begin
 
+    o_color_code <= i_back_color_code;
 
 end Behavioral;
