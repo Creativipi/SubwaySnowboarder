@@ -61,7 +61,7 @@ entity Controller is
            --MuxBackActor
            o_MBA_act_en : out STD_LOGIC;
            --ColorConvertor
-           o_CC_color_id : out STD_LOGIC_VECTOR (3 downto 0); --Peut-être mettre un vrai système de palette
+           o_CC_color_id : out STD_LOGIC_VECTOR (3 downto 0); --Peut-ï¿½tre mettre un vrai systï¿½me de palette
            o_CC_new_RBG : out STD_LOGIC_VECTOR (23 downto 0);
            o_CC_ch_color : out STD_LOGIC
            );
@@ -104,7 +104,7 @@ process(i_clk)
     o_BM_ch_flip_y  <= current_instruction(1) when opcode = "0101" else '0';
     o_BM_flip_y     <= current_instruction(0) when opcode = "0101" else '0';
 
-    -- ActorMgmt TO VERIFY IN SECOND ITERATION
+    -- ActorMgmt
     o_AM_act_id     <= current_instruction(27 downto 25) when opcode = "0010" or opcode = "0011" or opcode = "0100" else (others => '0');
     o_AM_ch_movepos <= current_instruction(24) when opcode = "0010" else '0';
     o_AM_ch_setpos  <= current_instruction(24) when opcode = "0011" else '0';
@@ -113,8 +113,8 @@ process(i_clk)
     o_AM_newpos_y   <= current_instruction(13 downto 4)  when opcode = "0010" or opcode = "0011" else (others => '0');
     o_AM_tile_id    <= current_instruction(23 downto 20) when opcode = "0100" else (others => '0');
     o_AM_ch_flip_x  <= current_instruction(3) when opcode = "0100" or opcode = "0011" or opcode = "0010" else '0';
-    o_AM_ch_flip_y  <= current_instruction(2) when opcode = "0100" or opcode = "0011" or opcode = "0010" else '0';
-    o_AM_flip_x     <= current_instruction(1) when opcode = "0100" or opcode = "0011" or opcode = "0010" else '0';
+    o_AM_ch_flip_y  <= current_instruction(1) when opcode = "0100" or opcode = "0011" or opcode = "0010" else '0';
+    o_AM_flip_x     <= current_instruction(2) when opcode = "0100" or opcode = "0011" or opcode = "0010" else '0';
     o_AM_flip_y     <= current_instruction(0) when opcode = "0100" or opcode = "0011" or opcode = "0010" else '0';
     -- Others
     --o_MBA_act_en    <= '0'; -- if not yet used
