@@ -4,7 +4,7 @@
 -- 
 -- Create Date: 08.06.2025 00:00:57
 -- Design Name: 
--- Module Name: TuileBufActor - Behavioral
+-- Module Name: MuxBackActor - Behavioral
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
@@ -31,18 +31,17 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity TuileBufActor is
-    Port ( i_tile_id : in STD_LOGIC_VECTOR (3 downto 0);
-           i_flip_x : in STD_LOGIC;
-           i_flip_y : in STD_LOGIC;
-           i_pix_x : in STD_LOGIC_VECTOR (3 downto 0);
-           i_pix_y : in STD_LOGIC_VECTOR (3 downto 0);
+entity MuxBackActor is
+    Port ( i_back_color_code : in STD_LOGIC_VECTOR (3 downto 0);
+           i_act_color_code : in STD_LOGIC_VECTOR (3 downto 0);
+           i_act_en : in STD_LOGIC;
            o_color_code : out STD_LOGIC_VECTOR (3 downto 0));
-end TuileBufActor;
+end MuxBackActor;
 
-architecture Behavioral of TuileBufActor is
+architecture Behavioral of MuxBackActor is
 
 begin
 
+    o_color_code <= i_back_color_code;
 
 end Behavioral;

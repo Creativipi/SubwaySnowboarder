@@ -41,7 +41,7 @@ entity BackMgmt is
            i_tile_id : in STD_LOGIC_VECTOR (4 downto 0); -- tuile qui change
            i_flip_y : in STD_LOGIC; -- valeur du flip
            i_ch_tile_id : in STD_LOGIC; -- change la tuile?
-           i_ch_flip : in STD_LOGIC; -- change le flip?
+           i_ch_flip_y : in STD_LOGIC; -- change le flip?
            i_clk : in STD_LOGIC; -- la clock
            
            -- Info du pixel qu'on regarde
@@ -86,7 +86,7 @@ begin
             -- write_index(6 downto 0) := i_col;
             write_index := i_row & i_col;
             current_tile := tile_map(to_integer(unsigned(write_index)));
-            if i_ch_flip = '1' then
+            if i_ch_flip_y = '1' then
                 current_tile(0) := i_flip_y;
             end if;
             if i_ch_tile_id = '1' then

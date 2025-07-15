@@ -61,7 +61,7 @@ entity Controller is
            --MuxBackActor
            o_MBA_act_en : out STD_LOGIC;
            --ColorConvertor
-           o_CC_color_id : out STD_LOGIC_VECTOR (3 downto 0); --Peut-être mettre un vrai système de palette
+           o_CC_color_id : out STD_LOGIC_VECTOR (3 downto 0); --Peut-ï¿½tre mettre un vrai systï¿½me de palette
            o_CC_new_RBG : out STD_LOGIC_VECTOR (23 downto 0);
            o_CC_ch_color : out STD_LOGIC
            );

@@ -57,5 +57,7 @@ architecture Behavioral of ActorMgmt is
 
 begin
 
+o_pix_x <= "0000";
+o_pix_y <= "0000";
 
 end Behavioral;
