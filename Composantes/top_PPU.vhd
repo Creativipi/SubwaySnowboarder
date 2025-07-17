@@ -145,7 +145,8 @@ component ActorMgmt is
     o_flip_x : out STD_LOGIC;
     o_flip_y : out STD_LOGIC;
     o_pix_x : out STD_LOGIC_VECTOR (3 downto 0);
-    o_pix_y : out STD_LOGIC_VECTOR (3 downto 0)
+    o_pix_y : out STD_LOGIC_VECTOR (3 downto 0);
+    o_is_actor_present : out STD_LOGIC
   );
 end component;
 
@@ -165,6 +166,7 @@ component MuxBackActor is
     i_back_color_code : in STD_LOGIC_VECTOR (3 downto 0);
     i_act_color_code : in STD_LOGIC_VECTOR (3 downto 0);
     i_act_en : in STD_LOGIC;
+    i_is_actor_present : in std_logic;
     o_color_code : out STD_LOGIC_VECTOR (3 downto 0)
   );
 end component;
@@ -240,6 +242,8 @@ end component;
     signal AM_flip_y : STD_LOGIC;
     signal AM_pix_x : STD_LOGIC_VECTOR (3 downto 0);
     signal AM_pix_y : STD_LOGIC_VECTOR (3 downto 0);
+    signal AM_is_actor_present : STD_LOGIC;
+
     
     --Sortie TuileBufActor
     signal TBA_color_code : std_logic_vector(3 downto 0);
@@ -349,7 +353,8 @@ ActorMgmt_0 : component ActorMgmt
       o_flip_x  => AM_flip_x,
       o_flip_y  => AM_flip_y,
       o_pix_x => AM_pix_x,
-      o_pix_y => AM_pix_y
+      o_pix_y => AM_pix_y,
+      o_is_actor_present => AM_is_actor_present
     );
     
 TuileBufActor_0 : component TuileBufActor
@@ -367,6 +372,7 @@ MuxBackActor_0 : component MuxBackActor
       i_back_color_code => TBB_color_code,
       i_act_color_code => TBA_color_code,
       i_act_en => Cont_MBA_act_en,
+      i_is_actor_present => AM_is_actor_present,
       o_color_code => MBA_color_code
     );
     
