@@ -41,6 +41,8 @@ end MuxBackActor;
 
 architecture Behavioral of MuxBackActor is
 
+    signal s_isActorAlpha : std_logic;
+
 begin
     -- use i_is_actor_present to pick background or actor color ?
     --
