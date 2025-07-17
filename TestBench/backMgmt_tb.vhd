@@ -45,7 +45,7 @@ architecture Behavioral of backMgmt_tb is
             i_tile_id    : in  STD_LOGIC_VECTOR (4 downto 0);
             i_flip_y     : in  STD_LOGIC;
             i_ch_tile_id : in  STD_LOGIC;
-            i_ch_flip_y    : in  STD_LOGIC;
+            i_ch_flipY    : in  STD_LOGIC;
             i_clk        : in  STD_LOGIC;
 
             o_tile_id    : out STD_LOGIC_VECTOR (4 downto 0);
@@ -62,7 +62,7 @@ architecture Behavioral of backMgmt_tb is
     signal i_tile_id_sim    : STD_LOGIC_VECTOR(4 downto 0) := (others => '0');
     signal i_flip_y_sim     : STD_LOGIC := '0';
     signal i_ch_tile_id_sim : STD_LOGIC := '0';
-    signal i_ch_flip_y_sim    : STD_LOGIC := '0';
+    signal i_ch_flip_sim    : STD_LOGIC := '0';
     signal i_clk_sim        : STD_LOGIC := '0';
 
     signal o_tile_id_sim : STD_LOGIC_VECTOR(4 downto 0);
@@ -79,7 +79,7 @@ begin
             i_tile_id    => i_tile_id_sim,
             i_flip_y     => i_flip_y_sim,
             i_ch_tile_id => i_ch_tile_id_sim,
-            i_ch_flip_y    => i_ch_flip_y_sim,
+            i_ch_flipY    => i_ch_flip_sim,
             i_clk        => i_clk_sim,
             o_tile_id    => o_tile_id_sim,
             o_flip_y     => o_flip_y_sim,
@@ -100,12 +100,19 @@ begin
         wait for 20 ns;
         -- Enable write
         i_ch_tile_id_sim <= '1';
-        i_ch_flip_y_sim <= '1';
+        i_ch_flip_sim <= '1';
         -- Change tile 0, 2
         i_col_sim <= "0000000";
         i_row_sim <= "0000010";
         i_tile_id_sim <= "11000";
         i_flip_y_sim <= '1';
+        -- x = 0, y = 2
+        wait for 20 ns;
+        -- View pixel (1, 1) of tile 0, 2
+        i_view_x_sim <= "0000000001";
+        i_view_y_sim <= "0000010001";
+        -- o_tile_id = 11000
+        -- o_pix_x = 1, o_pix_y = 1
         wait for 20 ns;
         -- Change tile 3, 2
         i_col_sim <= "0000011";
@@ -115,7 +122,7 @@ begin
         wait for 20 ns;
         -- Disable write 
         i_ch_tile_id_sim <= '0';
-        i_ch_flip_y_sim <= '0';
+        i_ch_flip_sim <= '0';
         -- View pixel (4, 4) of tile 0, 2
         i_view_x_sim <= "0000000100";
         i_view_y_sim <= "0000010100";
