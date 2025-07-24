@@ -67,6 +67,7 @@ architecture Behavioral of TuileBufBack is
     end;
 
     signal selectedTile : std_logic_vector(255 downto 0);
+    signal selectedTile_reg : std_logic_vector(255 downto 0);
     signal temp_matrix : std_logic_vector(255 downto 0);
 
 begin

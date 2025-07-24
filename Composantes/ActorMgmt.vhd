@@ -8,7 +8,7 @@
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
--- Description: Actor Manager using sparse format for 8 actors with 16x16 tiles
+-- Description: 
 -- 
 -- Dependencies: 
 -- 
@@ -17,23 +17,27 @@
 -- Additional Comments:
 -- 
 ----------------------------------------------------------------------------------
+
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.NUMERIC_STD.ALL;
+
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
 --use IEEE.NUMERIC_STD.ALL;
+
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx leaf cells in this code.
 --library UNISIM;
 --use UNISIM.VComponents.all;
+
 entity ActorMgmt is
     Port (
         -- Position du pixel dans le viewport
         i_view_x : in STD_LOGIC_VECTOR (9 downto 0);
         i_view_y : in STD_LOGIC_VECTOR (8 downto 0);
 
-        -- Mise à jour des acteurs (position RELATIVE AU VIEWPORT)
+        -- Mise ï¿½ jour des acteurs (position RELATIVE AU VIEWPORT)
         i_act_id : in STD_LOGIC_VECTOR (2 downto 0);
         i_newpos_x : in STD_LOGIC_VECTOR (9 downto 0);
         i_newpos_y : in STD_LOGIC_VECTOR (9 downto 0);
@@ -46,7 +50,7 @@ entity ActorMgmt is
         i_ch_flipY : in STD_LOGIC;
         i_clk : in STD_LOGIC;
 
-        -- Résultat : info du pixel
+        -- Rï¿½sultat : info du pixel
         o_tile_id : out STD_LOGIC_VECTOR (3 downto 0);
         o_flip_x : out STD_LOGIC;
         o_flip_y : out STD_LOGIC;
@@ -64,12 +68,12 @@ architecture Behavioral of ActorMgmt is
 
     signal actor_pos_x : pos_array_t := (
     0 => std_logic_vector(to_unsigned(320, 10)), -- acteur 0 au centre du viewport
-    1 => std_logic_vector(to_unsigned(336, 10)), -- acteur 1 juste à droite (16 px)
+    1 => std_logic_vector(to_unsigned(336, 10)), -- acteur 1 juste ï¿½ droite (16 px)
     others => (others => '0')
 );
 
 signal actor_pos_y : pos_array_t := (
-    0 => std_logic_vector(to_unsigned(180, 10)), -- centré verticalement
+    0 => std_logic_vector(to_unsigned(180, 10)), -- centrï¿½ verticalement
     1 => std_logic_vector(to_unsigned(180, 10)),
     others => (others => '0')
 );
@@ -84,7 +88,7 @@ signal actor_tile_id : tile_array_t := (
     signal s_actor_hit : std_logic_vector(7 downto 0);
 begin
 
-    -- Génération: détection de collision pixel / acteur
+    -- Gï¿½nï¿½ration: dï¿½tection de collision pixel / acteur
     gen_actor_check: for i in 0 to 7 generate
         process(i_view_x, i_view_y, actor_pos_x(i), actor_pos_y(i))
             variable view_x : integer;
@@ -106,7 +110,7 @@ begin
         end process;
     end generate;
 
-    -- Résolution: acteur de plus haute priorité (ID plus bas)
+    -- Rï¿½solution: acteur de plus haute prioritï¿½ (ID plus bas)
     process(s_actor_hit, actor_tile_id, actor_flip_x, actor_flip_y, i_view_x, i_view_y, actor_pos_x, actor_pos_y)
         variable found : boolean := false;
         variable rel_x, rel_y : integer range 0 to 15;
@@ -133,7 +137,7 @@ begin
         end loop;
     end process;
 
-    -- Écriture des données d'acteurs
+    -- ï¿½criture des donnï¿½es d'acteurs
     process(i_clk)
         variable id : integer;
     begin
