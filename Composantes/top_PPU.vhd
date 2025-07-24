@@ -76,7 +76,7 @@ component Controller is
     --MuxBackActor
     o_MBA_act_en : out STD_LOGIC;
     --ColorConvertor
-    o_CC_color_id : out STD_LOGIC_VECTOR (3 downto 0); --Peut-être mettre un vrai système de palette
+    o_CC_color_id : out STD_LOGIC_VECTOR (3 downto 0); --Peut-ï¿½tre mettre un vrai systï¿½me de palette
     o_CC_new_RBG : out STD_LOGIC_VECTOR (23 downto 0);
     o_CC_ch_color : out STD_LOGIC;
     o_BM_ch_tileBack : out STD_LOGIC
@@ -99,24 +99,24 @@ end component;
 
 component Viewport is
   port (
-    i_x : in STD_LOGIC_VECTOR (9 downto 0); --X en entrée
-    i_y : in STD_LOGIC_VECTOR (8 downto 0); --Y en entrée
-    i_ch_setoffset : in STD_LOGIC; --Est-ce que l'on veut définir un offset?
-    i_ch_moveoffset : in STD_LOGIC; --Est-ce que l'on veut décaler l'offset?
+    i_x : in STD_LOGIC_VECTOR (9 downto 0); --X en entrï¿½e
+    i_y : in STD_LOGIC_VECTOR (8 downto 0); --Y en entrï¿½e
+    i_ch_setoffset : in STD_LOGIC; --Est-ce que l'on veut dï¿½finir un offset?
+    i_ch_moveoffset : in STD_LOGIC; --Est-ce que l'on veut dï¿½caler l'offset?
     i_x_newoffset : in STD_LOGIC_VECTOR (9 downto 0); --Nouvelle position x
     i_y_newoffset : in STD_LOGIC_VECTOR (9 downto 0); --Nouvelle position y
     i_clk : in STD_LOGIC;
-    o_x_offseted : out STD_LOGIC_VECTOR (9 downto 0); --X en sortie, décalé
-    o_y_offseted : out STD_LOGIC_VECTOR (9 downto 0) --Y en sortie, décalé
+    o_x_offseted : out STD_LOGIC_VECTOR (9 downto 0); --X en sortie, dï¿½calï¿½
+    o_y_offseted : out STD_LOGIC_VECTOR (9 downto 0) --Y en sortie, dï¿½calï¿½
   );
 end component;
 
 component TileRenderer is
-Port (     i_view_x : in STD_LOGIC_VECTOR (9 downto 0); -- position x du pixel à voir
-           i_view_y : in STD_LOGIC_VECTOR (9 downto 0); -- position y du pixel à voir
+Port (     i_view_x : in STD_LOGIC_VECTOR (9 downto 0); -- position x du pixel ï¿½ voir
+           i_view_y : in STD_LOGIC_VECTOR (9 downto 0); -- position y du pixel ï¿½ voir
            
-           i_col : in STD_LOGIC_VECTOR (6 downto 0); -- prochaine tuile à changer
-           i_row : in STD_LOGIC_VECTOR (6 downto 0); -- prochaine tuile à changer
+           i_col : in STD_LOGIC_VECTOR (6 downto 0); -- prochaine tuile ï¿½ changer
+           i_row : in STD_LOGIC_VECTOR (6 downto 0); -- prochaine tuile ï¿½ changer
            i_tile_id : in STD_LOGIC_VECTOR (4 downto 0); -- tuile qui change
            i_flip_y : in STD_LOGIC; -- valeur du flip
            i_ch_tile_id : in STD_LOGIC; -- change la tuile?
@@ -180,7 +180,8 @@ component ActorMgmt is
     o_flip_x : out STD_LOGIC;
     o_flip_y : out STD_LOGIC;
     o_pix_x : out STD_LOGIC_VECTOR (3 downto 0);
-    o_pix_y : out STD_LOGIC_VECTOR (3 downto 0)
+    o_pix_y : out STD_LOGIC_VECTOR (3 downto 0);
+    o_is_actor_present : out STD_LOGIC
   );
 end component;
 
@@ -200,7 +201,7 @@ component MuxBackActor is
     i_back_color_code : in STD_LOGIC_VECTOR (3 downto 0);
     i_act_color_code : in STD_LOGIC_VECTOR (3 downto 0);
     i_act_en : in STD_LOGIC;
-    i_clk : in STD_LOGIC;
+    i_is_actor_present : in std_logic;
     o_color_code : out STD_LOGIC_VECTOR (3 downto 0)
   );
 end component;
@@ -252,7 +253,7 @@ end component;
     --MuxBackActor
     signal Cont_MBA_act_en : STD_LOGIC;
     --ColorConvertor
-    signal Cont_CC_color_id : STD_LOGIC_VECTOR (3 downto 0); --Peut-être mettre un vrai système de palette
+    signal Cont_CC_color_id : STD_LOGIC_VECTOR (3 downto 0); --Peut-ï¿½tre mettre un vrai systï¿½me de palette
     signal Cont_CC_new_RBG : STD_LOGIC_VECTOR (23 downto 0);
     signal Cont_CC_ch_color : STD_LOGIC;
     
@@ -285,6 +286,8 @@ end component;
     signal AM_flip_y : STD_LOGIC;
     signal AM_pix_x : STD_LOGIC_VECTOR (3 downto 0);
     signal AM_pix_y : STD_LOGIC_VECTOR (3 downto 0);
+    signal AM_is_actor_present : STD_LOGIC;
+
     
     --Sortie TuileBufActor
     signal TBA_color_code : std_logic_vector(3 downto 0);
@@ -331,7 +334,7 @@ Controller_0: component Controller
       --MuxBackActor
       o_MBA_act_en => Cont_MBA_act_en,
       --ColorConvertor
-      o_CC_color_id => Cont_CC_color_id, --Peut-être mettre un vrai système de palette
+      o_CC_color_id => Cont_CC_color_id, --Peut-ï¿½tre mettre un vrai systï¿½me de palette
       o_CC_new_RBG => Cont_CC_new_RBG,
       o_CC_ch_color => Cont_CC_ch_color
     );
@@ -396,8 +399,8 @@ port map(
 
 ActorMgmt_0 : component ActorMgmt
      port map(
-      i_view_x => View_x,
-      i_view_y => View_y,
+      i_view_x => i_x(9 downto 0),
+      i_view_y => i_y(8 downto 0),
       i_act_id => Cont_AM_act_id,
       i_newpos_x => Cont_AM_newpos_x,
       i_newpos_y => Cont_AM_newpos_y,
@@ -414,7 +417,8 @@ ActorMgmt_0 : component ActorMgmt
       o_flip_x  => AM_flip_x,
       o_flip_y  => AM_flip_y,
       o_pix_x => AM_pix_x,
-      o_pix_y => AM_pix_y
+      o_pix_y => AM_pix_y,
+      o_is_actor_present => AM_is_actor_present
     );
     
 TuileBufActor_0 : component TuileBufActor
@@ -432,7 +436,7 @@ MuxBackActor_0 : component MuxBackActor
       i_back_color_code => TBB_color_code,
       i_act_color_code => TBA_color_code,
       i_act_en => Cont_MBA_act_en,
-      i_clk => i_clk,
+      i_is_actor_present => AM_is_actor_present,
       o_color_code => MBA_color_code
     );
     
