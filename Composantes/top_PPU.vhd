@@ -335,8 +335,8 @@ TuileBufBack_0 : component TuileBufBack
 
 ActorMgmt_0 : component ActorMgmt
      port map(
-      i_view_x => View_x,
-      i_view_y => View_y,
+      i_view_x => i_x(9 downto 0),
+      i_view_y => i_y(8 downto 0),
       i_act_id => Cont_AM_act_id,
       i_newpos_x => Cont_AM_newpos_x,
       i_newpos_y => Cont_AM_newpos_y,
