@@ -59,7 +59,7 @@ component Controller is
     o_BM_tile_id : out STD_LOGIC_VECTOR (4 downto 0);
     o_BM_flip_y : out STD_LOGIC;
     o_BM_ch_tile_id : out STD_LOGIC;
-    o_BM_ch_flipY : out STD_LOGIC;
+    o_BM_ch_flip_y : out STD_LOGIC;
     --ActorMgmt
     o_AM_newpos_x : out STD_LOGIC_VECTOR (9 downto 0);
     o_AM_newpos_y : out STD_LOGIC_VECTOR (9 downto 0);
@@ -71,12 +71,12 @@ component Controller is
     o_AM_ch_setpos : out STD_LOGIC;
     o_AM_ch_movepos : out STD_LOGIC;
     o_AM_ch_tile_id : out STD_LOGIC;
-    o_AM_ch_flipX : out STD_LOGIC;
-    o_AM_ch_flipY : out STD_LOGIC;
+    o_AM_ch_flip_x : out STD_LOGIC;
+    o_AM_ch_flip_y : out STD_LOGIC;
     --MuxBackActor
     o_MBA_act_en : out STD_LOGIC;
     --ColorConvertor
-    o_CC_color_id : out STD_LOGIC_VECTOR (3 downto 0); --Peut-ï¿½tre mettre un vrai systï¿½me de palette
+    o_CC_color_id : out STD_LOGIC_VECTOR (3 downto 0); --Peut-?tre mettre un vrai syst?me de palette
     o_CC_new_RBG : out STD_LOGIC_VECTOR (23 downto 0);
     o_CC_ch_color : out STD_LOGIC;
     o_BM_ch_tileBack : out STD_LOGIC
@@ -99,24 +99,24 @@ end component;
 
 component Viewport is
   port (
-    i_x : in STD_LOGIC_VECTOR (9 downto 0); --X en entrï¿½e
-    i_y : in STD_LOGIC_VECTOR (8 downto 0); --Y en entrï¿½e
-    i_ch_setoffset : in STD_LOGIC; --Est-ce que l'on veut dï¿½finir un offset?
-    i_ch_moveoffset : in STD_LOGIC; --Est-ce que l'on veut dï¿½caler l'offset?
+    i_x : in STD_LOGIC_VECTOR (9 downto 0); --X en entr?e
+    i_y : in STD_LOGIC_VECTOR (8 downto 0); --Y en entr?e
+    i_ch_setoffset : in STD_LOGIC; --Est-ce que l'on veut d?finir un offset?
+    i_ch_moveoffset : in STD_LOGIC; --Est-ce que l'on veut d?caler l'offset?
     i_x_newoffset : in STD_LOGIC_VECTOR (9 downto 0); --Nouvelle position x
     i_y_newoffset : in STD_LOGIC_VECTOR (9 downto 0); --Nouvelle position y
     i_clk : in STD_LOGIC;
-    o_x_offseted : out STD_LOGIC_VECTOR (9 downto 0); --X en sortie, dï¿½calï¿½
-    o_y_offseted : out STD_LOGIC_VECTOR (9 downto 0) --Y en sortie, dï¿½calï¿½
+    o_x_offseted : out STD_LOGIC_VECTOR (9 downto 0); --X en sortie, d?cal?
+    o_y_offseted : out STD_LOGIC_VECTOR (9 downto 0) --Y en sortie, d?cal?
   );
 end component;
 
 component TileRenderer is
-Port (     i_view_x : in STD_LOGIC_VECTOR (9 downto 0); -- position x du pixel ï¿½ voir
-           i_view_y : in STD_LOGIC_VECTOR (9 downto 0); -- position y du pixel ï¿½ voir
+Port (     i_view_x : in STD_LOGIC_VECTOR (9 downto 0); -- position x du pixel ? voir
+           i_view_y : in STD_LOGIC_VECTOR (9 downto 0); -- position y du pixel ? voir
            
-           i_col : in STD_LOGIC_VECTOR (6 downto 0); -- prochaine tuile ï¿½ changer
-           i_row : in STD_LOGIC_VECTOR (6 downto 0); -- prochaine tuile ï¿½ changer
+           i_col : in STD_LOGIC_VECTOR (6 downto 0); -- prochaine tuile ? changer
+           i_row : in STD_LOGIC_VECTOR (6 downto 0); -- prochaine tuile ? changer
            i_tile_id : in STD_LOGIC_VECTOR (4 downto 0); -- tuile qui change
            i_flip_y : in STD_LOGIC; -- valeur du flip
            i_ch_tile_id : in STD_LOGIC; -- change la tuile?
@@ -130,70 +130,6 @@ Port (     i_view_x : in STD_LOGIC_VECTOR (9 downto 0); -- position x du pixel ï
            
            -- Info du pixel qu'on regarde
            o_colorCode : out STD_LOGIC_VECTOR (3 downto 0));
-end component;
-
---component BackMgmt is
---  port (
---    i_view_x : in STD_LOGIC_VECTOR (9 downto 0);
---    i_view_y : in STD_LOGIC_VECTOR (9 downto 0);
---    i_col : in STD_LOGIC_VECTOR (6 downto 0);
---    i_row : in STD_LOGIC_VECTOR (6 downto 0);
---    i_tile_id : in STD_LOGIC_VECTOR (4 downto 0);
---    i_flip_y : in STD_LOGIC;
---    i_ch_tile_id : in STD_LOGIC;
---    i_ch_flipY : in STD_LOGIC;
---    i_clk : in STD_LOGIC;
---    o_tile_id : out STD_LOGIC_VECTOR (4 downto 0);
---    o_flip_y : out STD_LOGIC;
---    o_pix_x : out STD_LOGIC_VECTOR (2 downto 0);
---    o_pix_y : out STD_LOGIC_VECTOR (2 downto 0)
---  );
---end component;
-
---component TuileBufBack is
---  port (
---    i_tile_id : in STD_LOGIC_VECTOR (4 downto 0);
---    i_flip_y : in STD_LOGIC;
---    i_pix_x : in STD_LOGIC_VECTOR (2 downto 0);
---    i_pix_y : in STD_LOGIC_VECTOR (2 downto 0);
---    o_color_code : out STD_LOGIC_VECTOR (3 downto 0)
---  );
---end component;
-
-component ActorMgmt is
-  port (
-    i_view_x : in STD_LOGIC_VECTOR (9 downto 0);
-    i_view_y : in STD_LOGIC_VECTOR (9 downto 0);
-    i_act_id : in STD_LOGIC_VECTOR (2 downto 0);
-    i_newpos_x : in STD_LOGIC_VECTOR (9 downto 0);
-    i_newpos_y : in STD_LOGIC_VECTOR (9 downto 0);
-    i_tile_id : in STD_LOGIC_VECTOR (3 downto 0);
-    i_flip_x : in STD_LOGIC;
-    i_flip_y : in STD_LOGIC;
-    i_ch_setpos : in STD_LOGIC;
-    i_ch_movepos : in STD_LOGIC;
-    i_ch_tile_id : in STD_LOGIC;
-    i_ch_flipX : in STD_LOGIC;
-    i_ch_flipY : in STD_LOGIC;
-    i_clk : in STD_LOGIC;
-    o_tile_id : out STD_LOGIC_VECTOR (3 downto 0);
-    o_flip_x : out STD_LOGIC;
-    o_flip_y : out STD_LOGIC;
-    o_pix_x : out STD_LOGIC_VECTOR (3 downto 0);
-    o_pix_y : out STD_LOGIC_VECTOR (3 downto 0);
-    o_is_actor_present : out STD_LOGIC
-  );
-end component;
-
-component TuileBufActor is
-  port (
-    i_tile_id : in STD_LOGIC_VECTOR (3 downto 0);
-    i_flip_x : in STD_LOGIC;
-    i_flip_y : in STD_LOGIC;
-    i_pix_x : in STD_LOGIC_VECTOR (3 downto 0);
-    i_pix_y : in STD_LOGIC_VECTOR (3 downto 0);
-    o_color_code : out STD_LOGIC_VECTOR (3 downto 0)
-  );
 end component;
 
 component MuxBackActor is
@@ -214,13 +150,6 @@ component ColorConvertor is
     i_ch_color : in STD_LOGIC;
     i_clk : in STD_LOGIC;
     o_RBG : out STD_LOGIC_VECTOR (23 downto 0)
-  );
-end component;
-
-component VideoProcessingSystem is
-  port (
-    i_video_input : in STD_LOGIC_VECTOR (23 downto 0);
-    HDMI : out STD_LOGIC_VECTOR (18 downto 0)
   );
 end component;
 
@@ -253,7 +182,7 @@ end component;
     --MuxBackActor
     signal Cont_MBA_act_en : STD_LOGIC;
     --ColorConvertor
-    signal Cont_CC_color_id : STD_LOGIC_VECTOR (3 downto 0); --Peut-ï¿½tre mettre un vrai systï¿½me de palette
+    signal Cont_CC_color_id : STD_LOGIC_VECTOR (3 downto 0); --Peut-?tre mettre un vrai syst?me de palette
     signal Cont_CC_new_RBG : STD_LOGIC_VECTOR (23 downto 0);
     signal Cont_CC_ch_color : STD_LOGIC;
     
@@ -317,7 +246,7 @@ Controller_0: component Controller
       o_BM_tile_id => Cont_BM_tile_id,
       o_BM_flip_y => Cont_BM_flip_y,
       o_BM_ch_tile_id => Cont_BM_ch_tile_id,
-      o_BM_ch_flipY => Cont_BM_ch_flip,
+      o_BM_ch_flip_y => Cont_BM_ch_flip,
       o_BM_ch_tileBack => Cont_BM_ch_tileBack,
       --ActorMgmt
       o_AM_newpos_x => Cont_AM_newpos_x,
@@ -329,12 +258,12 @@ Controller_0: component Controller
       o_AM_ch_setpos => Cont_AM_ch_setpos,
       o_AM_ch_movepos => Cont_AM_ch_movepos,
       o_AM_ch_tile_id => Cont_AM_ch_tile_id,
-      o_AM_ch_flipX => Cont_AM_ch_flip_X,
-      o_AM_ch_flipY => Cont_AM_ch_flip_Y,
+      o_AM_ch_flip_x => Cont_AM_ch_flip_X,
+      o_AM_ch_flip_y => Cont_AM_ch_flip_Y,
       --MuxBackActor
       o_MBA_act_en => Cont_MBA_act_en,
       --ColorConvertor
-      o_CC_color_id => Cont_CC_color_id, --Peut-ï¿½tre mettre un vrai systï¿½me de palette
+      o_CC_color_id => Cont_CC_color_id, --Peut-?tre mettre un vrai syst?me de palette
       o_CC_new_RBG => Cont_CC_new_RBG,
       o_CC_ch_color => Cont_CC_ch_color
     );
@@ -370,66 +299,6 @@ port map(
       i_ch_we => '0',
       o_colorCode => TBB_color_code
 );
-
---BackMgmt_0: component BackMgmt
---     port map(
---      i_view_x => View_x,
---      i_view_y => View_y,
---      i_col => Cont_BM_col,
---      i_row => Cont_BM_row,
---      i_tile_id => Cont_BM_tile_id,
---      i_flip_y => Cont_BM_flip_y,
---      i_ch_tile_id => Cont_BM_ch_tile_id,
---      i_ch_flipY => Cont_BM_ch_flip,
---      i_clk => i_clk,
---      o_tile_id => BM_tile_id,
---      o_flip_y => BM_flip_y,
---      o_pix_x => BM_pix_x,
---      o_pix_y => BM_pix_y
---    );
-  
---TuileBufBack_0 : component TuileBufBack
---     port map(
---      i_tile_id => BM_tile_id,
---      i_flip_y => BM_flip_y,
---      i_pix_x => BM_pix_x,
---      i_pix_y => BM_pix_y,
---      o_color_code => TBB_color_code
---    );
-
-ActorMgmt_0 : component ActorMgmt
-     port map(
-      i_view_x => i_x(9 downto 0),
-      i_view_y => i_y(8 downto 0),
-      i_act_id => Cont_AM_act_id,
-      i_newpos_x => Cont_AM_newpos_x,
-      i_newpos_y => Cont_AM_newpos_y,
-      i_tile_id => Cont_AM_tile_id,
-      i_flip_x => Cont_AM_flip_x,
-      i_flip_y => Cont_AM_flip_y,
-      i_ch_setpos => Cont_AM_ch_setpos,
-      i_ch_movepos => Cont_AM_ch_movepos,
-      i_ch_tile_id => Cont_AM_ch_tile_id,
-      i_ch_flipX => Cont_AM_ch_flip_x,
-      i_ch_flipY => Cont_AM_ch_flip_y,
-      i_clk => i_clk,
-      o_tile_id => AM_tile_id,
-      o_flip_x  => AM_flip_x,
-      o_flip_y  => AM_flip_y,
-      o_pix_x => AM_pix_x,
-      o_pix_y => AM_pix_y,
-      o_is_actor_present => AM_is_actor_present
-    );
-    
-TuileBufActor_0 : component TuileBufActor
-     port map(
-      i_tile_id => AM_tile_id,
-      i_flip_x  => AM_flip_x,
-      i_flip_y  => AM_flip_y,
-      i_pix_x => AM_pix_x,
-      i_pix_y => AM_pix_y,
-      o_color_code => TBA_color_code
-    );
     
 MuxBackActor_0 : component MuxBackActor
      port map(

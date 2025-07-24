@@ -24,7 +24,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx leaf cells in this code.
@@ -35,7 +35,7 @@ entity ActorMgmt is
     Port (
         -- Position du pixel dans le viewport
         i_view_x : in STD_LOGIC_VECTOR (9 downto 0);
-        i_view_y : in STD_LOGIC_VECTOR (8 downto 0);
+        i_view_y : in STD_LOGIC_VECTOR (9 downto 0);
 
         -- Mise � jour des acteurs (position RELATIVE AU VIEWPORT)
         i_act_id : in STD_LOGIC_VECTOR (2 downto 0);
