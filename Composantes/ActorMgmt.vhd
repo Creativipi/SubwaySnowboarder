@@ -75,9 +75,7 @@ signal actor_pos_y : pos_array_t := (
 );
 
 signal actor_tile_id : tile_array_t := (
-    0 => std_logic_vector(to_unsigned(1, 4)), -- tuile #1
-    1 => std_logic_vector(to_unsigned(1, 4)), -- même tuile pour l'acteur 1
-    others => (others => '0')
+    others => std_logic_vector(to_unsigned(0, 4))
 );
 
     signal actor_flip_x : flip_array_t := (others => '0');
