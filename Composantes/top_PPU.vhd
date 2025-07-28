@@ -60,6 +60,13 @@ component Controller is
     o_BM_flip_y : out STD_LOGIC;
     o_BM_ch_tile_id : out STD_LOGIC;
     o_BM_ch_flip_y : out STD_LOGIC;
+    o_BM_ch_tileBack : out STD_LOGIC;
+    
+    o_BM_tile_write : out STD_LOGIC_VECTOR (4 downto 0);
+    o_BM_write_enable_pix : out STD_LOGIC;
+    o_BM_new_cc : out STD_LOGIC_VECTOR (3 downto 0);
+    o_BM_pix_x : out STD_LOGIC_VECTOR (2 downto 0);
+    o_BM_pix_y : out STD_LOGIC_VECTOR (2 downto 0);
     --ActorMgmt
     o_AM_newpos_x : out STD_LOGIC_VECTOR (9 downto 0);
     o_AM_newpos_y : out STD_LOGIC_VECTOR (9 downto 0);
@@ -78,8 +85,8 @@ component Controller is
     --ColorConvertor
     o_CC_color_id : out STD_LOGIC_VECTOR (3 downto 0); --Peut-?tre mettre un vrai syst?me de palette
     o_CC_new_RBG : out STD_LOGIC_VECTOR (23 downto 0);
-    o_CC_ch_color : out STD_LOGIC;
-    o_BM_ch_tileBack : out STD_LOGIC
+    o_CC_ch_color : out STD_LOGIC
+    
   );
 end component;
 
@@ -120,13 +127,14 @@ Port (     i_view_x : in STD_LOGIC_VECTOR (9 downto 0); -- position x du pixel ?
            i_tile_id : in STD_LOGIC_VECTOR (4 downto 0); -- tuile qui change
            i_flip_y : in STD_LOGIC; -- valeur du flip
            i_ch_tile_id : in STD_LOGIC; -- change la tuile?
-           i_ch_flipY : in STD_LOGIC; -- change le flip?
+           i_ch_flip_y : in STD_LOGIC; -- change le flip?
            i_clk : in STD_LOGIC; -- la clock
            i_ch_x : in std_logic_vector( 2 downto 0);
            i_ch_y : in std_logic_vector( 2 downto 0);
            i_ch_cc : in std_logic_vector (3 downto 0);
            i_ch_we : in std_logic;
            i_ch_we_tileBack : in std_logic;
+           i_tile_id_write : in STD_LOGIC_VECTOR (4 downto 0);
            
            -- Info du pixel qu'on regarde
            o_colorCode : out STD_LOGIC_VECTOR (3 downto 0));
@@ -167,6 +175,12 @@ end component;
     signal Cont_BM_ch_tile_id : STD_LOGIC;
     signal Cont_BM_ch_flip : STD_LOGIC;
     signal Cont_BM_ch_tileBack : std_logic;
+    
+    signal CONT_BM_tile_write : STD_LOGIC_VECTOR (4 downto 0);
+    signal CONT_BM_write_enable_pix : STD_LOGIC;
+    signal CONT_BM_new_cc : STD_LOGIC_VECTOR (3 downto 0);
+    signal CONT_BM_new_pix_x : STD_LOGIC_VECTOR (2 downto 0);
+    signal CONT_BM_new_pix_y : STD_LOGIC_VECTOR (2 downto 0);
     --ActorMgmt
     signal Cont_AM_act_id : STD_LOGIC_VECTOR (2 downto 0);
     signal Cont_AM_newpos_x : STD_LOGIC_VECTOR (9 downto 0);
@@ -204,6 +218,8 @@ end component;
     signal BM_flip_y : std_logic;
     signal BM_pix_x : std_logic_vector(2 downto 0);
     signal BM_pix_y : std_logic_vector(2 downto 0);
+    
+    
     
     
     --Sortie TuileBufBack
@@ -248,6 +264,12 @@ Controller_0: component Controller
       o_BM_ch_tile_id => Cont_BM_ch_tile_id,
       o_BM_ch_flip_y => Cont_BM_ch_flip,
       o_BM_ch_tileBack => Cont_BM_ch_tileBack,
+      
+      o_BM_tile_write => CONT_BM_tile_write,
+      o_BM_write_enable_pix => CONT_BM_write_enable_pix,
+      o_BM_new_cc => CONT_BM_new_cc,
+      o_BM_pix_x => CONT_BM_new_pix_x,
+      o_BM_pix_y => CONT_BM_new_pix_y,
       --ActorMgmt
       o_AM_newpos_x => Cont_AM_newpos_x,
       o_AM_newpos_y => Cont_AM_newpos_y,
@@ -290,13 +312,14 @@ port map(
       i_tile_id => Cont_BM_tile_id,
       i_flip_y => Cont_BM_flip_y,
       i_ch_tile_id => Cont_BM_ch_tile_id,
-      i_ch_flipY => Cont_BM_ch_flip,
+      i_ch_flip_y => Cont_BM_ch_flip,
       i_clk => i_clk,
       i_ch_we_tileBack => Cont_BM_ch_tileBack,
-      i_ch_x => "000",
-      i_ch_y => "000",
-      i_ch_cc => "0000",
-      i_ch_we => '0',
+      i_tile_id_write => CONT_BM_tile_write,
+      i_ch_x => CONT_BM_new_pix_x,
+      i_ch_y => CONT_BM_new_pix_y,
+      i_ch_cc => CONT_BM_new_cc,
+      i_ch_we => CONT_BM_write_enable_pix,
       o_colorCode => TBB_color_code
 );
     
