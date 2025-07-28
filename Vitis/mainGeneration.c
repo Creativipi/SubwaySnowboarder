@@ -43,9 +43,9 @@ int main() {
             rmvTileY = viewportY + 320; // 320 = 5 * 64 donc 6 rangées existent en même temps
 
             if (viewportY == 0) {
-                newTileY = 1023 - 63; // Adjust for the wrap-around
+                newTileY += 1024; // Adjust for the wrap-around
             } else if (viewportY >= 704){
-                rmvTileY-=1024; // Adjust for the wrap-around
+                rmvTileY -= 1024; // Adjust for the wrap-around
             }
 
             flag = 1;
