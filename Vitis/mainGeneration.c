@@ -10,6 +10,24 @@
 #include "randomObstacleGenerator.h"
 #include "dynamicArrayHazards.h"
 
+int columnDividerColorTileChoice(char color, bool isFirstIteration, bool newLine) {
+    int tileId;
+    if (color == 'r') {
+        if (isFirstIteration || newLine) {
+            tileId = 10;
+        } else {
+            tileId = 2;
+        }
+    } else if (color == 'b') {
+        if (isFirstIteration) {
+            tileId = 9;
+        } else {
+            tileId = 1;
+        }
+    }
+    return tileId;
+}
+
 int main() {
     configureScaler();
     configureVdma();
@@ -22,15 +40,18 @@ int main() {
 
     int currentLine = 0;
 	int flag = 0;
+    int jumpStartX;
 	int setBackTile;
 	int tileX = 0;
 	int newTileY = 0;
 	int rmvTileY = 0;
 
-    int numLines;
+    int numLines = 3;
     int globalCounter = 0;
     int bitIndex;
     bool generateObstacle;
+    int previousNumLines = 0;
+    bool isFirstIteration = true;
 
     PositionArray hazards;
     initArray(&hazards, 2); // Initialize the hazard array
@@ -42,8 +63,8 @@ int main() {
 		MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setView);
 
         if (viewportY % SPACE_BETWEEN_OBSTACLES_ROWS == 0) {
-            newTileY = viewportY - SPACE_BETWEEN_OBSTACLES_ROWS;
-            rmvTileY = viewportY + (3 * SPACE_BETWEEN_OBSTACLES_ROWS); // 3 * 128 donc 4 rangées existent en même temps
+            newTileY = viewportY - (SPACE_BETWEEN_OBSTACLES_ROWS * 2); // 128 * 2 donc 2 rangées avant le viewport
+            rmvTileY = viewportY + (SPACE_BETWEEN_OBSTACLES_ROWS * 3); // 128 * 3 donc 3 rangées dans le viewport
 
             if (newTileY < 0) {
                 newTileY += 1024; // Adjust for the wrap-around
@@ -59,14 +80,15 @@ int main() {
         } else {
             flag = 0;
         }
-		
+
+        jumpStartX = ((13 - numLines) / 2) * COL_WIDTH;
         if (flag == 1) {
             // printf("Viewport Y: %d\n", viewportY);
             // printf("New Tile Y: %d, Remove Tile Y: %d\n", newTileY, rmvTileY);
 
-            int obstacleMask = generateObstacleMask(globalCounter/100000.0f, &numLines);
-            tileX = ((13 - numLines) / 2) * COL_WIDTH;
-            while (currentLine <= numLines - 1) {
+            int obstacleMask = generateObstacleMask(globalCounter/100000.0f, &numLines, 0);
+            tileX = jumpStartX;
+            while (currentLine < numLines) {
                 if (currentLine != 0) {
                     tileX += COL_WIDTH;
                 }
@@ -126,6 +148,28 @@ int main() {
 
             // printf("Hazards Size: %d\n", hazards.size);
         }
+
+        int columnDividerX;
+        bool newLine = false;
+        if (numLines != previousNumLines) {
+            newLine = true;
+        }
+
+        while (currentLine < numLines) {
+            if (currentLine == 0) {
+                columnDividerX = jumpStartX + 1;
+                setBackTile = cmdGenSetBackTile(columnDividerColorTileChoice('r', isFirstIteration, newLine), true, columnDividerX, viewportY - SPACE_BETWEEN_OBSTACLES_ROWS, false, false);
+            } else if (currentLine == numLines - 1) {
+                columnDividerX = jumpStartX + 1 + (COL_WIDTH * currentLine);
+                setBackTile = cmdGenSetBackTile(columnDividerColorTileChoice('r', isFirstIteration, newLine), true, columnDividerX, viewportY - SPACE_BETWEEN_OBSTACLES_ROWS, false, false);
+            } else {
+                columnDividerX = jumpStartX + 1 + (COL_WIDTH * currentLine);
+                setBackTile = cmdGenSetBackTile(columnDividerColorTileChoice('b', isFirstIteration, newLine), true, columnDividerX, viewportY - SPACE_BETWEEN_OBSTACLES_ROWS, false, false);
+            }
+            MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
+        }
+        isFirstIteration = false;
+        previousNumLines = numLines;
         
         viewportY--;
 		if (viewportY < 0) {
