@@ -1,26 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-
-typedef enum
-{
-    Small_Tree,
-    Big_Tree,
-    Rock
-} Type;
-typedef struct
-{
-    int x; // top left corner
-    int y; // top left corner
-    int height;
-    int width;
-    Type hazard;
-} Positions;
-
-typedef struct {
-    Positions* data;
-    int size;
-    int capacity;
-} PositionArray;
+#include "dynamicArrayHazards.h"
 
 void initArray(PositionArray* arr, int initialCapacity) {
     arr->data = malloc(initialCapacity * sizeof(Positions));
