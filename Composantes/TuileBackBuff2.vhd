@@ -14,6 +14,7 @@ entity TuileBackBuff2 is
     i_ch_we : in std_logic;
     i_clk : in STD_LOGIC;
     i_flip_y : in STD_LOGIC;
+    i_tile_id_write : in STD_LOGIC_VECTOR (4 downto 0);
     o_colorCode : out STD_LOGIC_VECTOR (3 downto 0));
 end TuileBackBuff2;
 
@@ -22,6 +23,16 @@ architecture Behavioral of TuileBackBuff2 is
     signal tuile_outputs : tuile_out_array_t;
     signal tuile_write_enable : std_logic_vector(31 downto 0);
 begin
+    
+    process(i_tile_id, i_ch_we)
+        variable idx : integer;
+    begin
+        for i in 0 to 31 loop
+            tuile_write_enable(i) <= '0';
+        end loop;
+        idx := to_integer(unsigned(i_tile_id_write));
+        tuile_write_enable(idx) <= i_ch_we;
+    end process;
     
     gen_tuile_instances : for i in 0 to 31 generate
         tuile_inst : entity work.Tuile
