@@ -35,10 +35,6 @@ constant sb : std_logic_vector (3 downto 0) := "1100"; -- Sky Blue
 constant sa : std_logic_vector (3 downto 0) := "1101"; -- Salmon
 constant pi : std_logic_vector (3 downto 0) := "1110"; -- Pink
 constant pu : std_logic_vector (3 downto 0) := "1111"; -- Purple
-
-    type tuile_out_array_t is array (0 to 31) of std_logic_vector(3 downto 0);
-    signal tuile_outputs : tuile_out_array_t;
-    signal tuile_write_enable : std_logic_vector(31 downto 0);
     
     type tile_d_array_t is array (0 to 1023) of std_logic_vector(3 downto 0);
     signal tile_data_map_d : tile_d_array_t :=
