@@ -61,7 +61,9 @@ int main() {
             int obstacleMask = generateObstacleMask(globalCounter/100000.0f, &numLines);
             tileX = ((13 - numLines) / 2) * 6;
             while (currentLine <= numLines - 1) {
-                tileX += currentLine * 6;
+                if (currentLine != 0) {
+                    tileX += 6;
+                }
 
                 bitIndex = (numLines - 1) - currentLine;
                 generateObstacle = (obstacleMask >> bitIndex) & 1;
