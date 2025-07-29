@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-int generateObstacleMask(float difficulty, int *numLines);
+int generateObstacleMask(float difficulty, int *numLines, int mode);
 void printObstacleLines(int mask, int numLines);
 
 #endif
