@@ -63,23 +63,58 @@ begin
     case i_tile_id is
         when "000" =>
             matrix_16x16 <= 
-            bl & bl & wh & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &
-            bl & bl & wh & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &
-            bl & bl & wh & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &
-            bl & bl & wh & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &
-            bl & bl & wh & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &
-            bl & bl & wh & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &
-            bl & bl & wh & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &
-            bl & bl & wh & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & 
-            bl & bl & wh & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &     
-            bl & bl & wh & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &     
-            bl & bl & wh & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &     
-            bl & bl & wh & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &     
-            bl & bl & wh & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &     
-            bl & bl & wh & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &     
-            bl & bl & wh & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &     
-            bl & bl & wh & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl;   
-             
+            bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &
+            bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &
+            bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &
+            bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &
+            bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &
+            bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &
+            bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &
+            bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & 
+            bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &     
+            bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &     
+            bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &     
+            bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &     
+            bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &     
+            bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &     
+            bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl &     
+            bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl;   
+        when "001" =>
+            matrix_16x16 <= 
+            wh & wh & wh & wh & wh & wh & wh & wh & bu & wh & wh & wh & wh & wh & wh & wh &
+            wh & wh & wh & wh & wh & wh & wh & bu & wh & wh & wh & wh & wh & wh & wh & wh &
+            wh & wh & bl & wh & wh & wh & bu & wh & wh & wh & wh & wh & wh & wh & wh & wh &
+            wh & bl & bl & bl & wh & bu & wh & wh & wh & wh & wh & wh & wh & wh & wh & wh &
+            wh & bl & bl & bl & oa & wh & wh & wh & wh & wh & wh & wh & wh & wh & wh & wh &
+            wh & wh & bl & oa & bl & wh & wh & wh & wh & wh & wh & wh & wh & wh & wh & wh &
+            wh & wh & oa & bl & bl & bl & wh & wh & wh & wh & wh & wh & wh & wh & wh & wh &
+            wh & bu & wh & bl & bl & bl & bl & wh & bl & bl & bl & bl & bl & bl & wh & bu & 
+            wh & bu & wh & wh & bl & bl & bl & bl & bl & bl & bl & bl & bl & bl & bu & wh &     
+            bu & wh & wh & wh & wh & bl & bl & bl & bl & bl & bl & bl & bl & bu & wh & wh &     
+            bu & wh & wh & wh & wh & wh & bl & bl & bl & bl & bl & bl & bu & wh & wh & wh &     
+            bu & wh & wh & wh & wh & wh & wh & bl & bl & bl & wh & bu & wh & wh & wh & wh &     
+            bu & wh & wh & wh & wh & wh & wh & wh & wh & wh & bu & wh & wh & wh & wh & wh &     
+            wh & bu & wh & wh & wh & wh & wh & wh & wh & bu & wh & wh & wh & wh & wh & wh &     
+            wh & wh & bu & wh & wh & wh & wh & bu & bu & wh & wh & wh & wh & wh & wh & wh &     
+            wh & wh & wh & bu & bu & bu & bu & wh & wh & wh & wh & wh & wh & wh & wh & wh;
+        when "010" =>
+            matrix_16x16 <= 
+            wh & wh & wh & wh & wh & wh & wh & wh & wh & bu & bu & bu & bu & wh & wh & bl &
+            wh & wh & wh & wh & wh & wh & wh & bu & bu & wh & wh & wh & wh & bu & bl & bl &
+            wh & wh & wh & wh & wh & wh & bu & wh & wh & wh & wh & wh & wh & oa & bl & bl &
+            wh & wh & wh & wh & wh & bu & wh & wh & wh & wh & wh & wh & wh & bl & oa & bl &
+            wh & wh & wh & wh & bu & wh & wh & wh & wh & wh & wh & wh & bl & bl & bl & bu &
+            wh & wh & wh & bu & wh & wh & wh & wh & wh & wh & wh & bl & bl & bl & wh & bu &
+            wh & wh & bu & wh & wh & wh & wh & wh & wh & bl & bl & bl & bl & bl & wh & bu &
+            wh & bu & wh & wh & wh & wh & wh & bl & bl & bl & bl & bl & bl & wh & wh & bu & 
+            bu & wh & oa & oa & oa & oa & bl & bl & bl & bl & bl & bl & wh & wh & bu & wh &     
+            wh & oa & bl & bl & bl & bl & oa & bl & bl & bl & bl & wh & wh & bu & wh & wh &     
+            oa & bl & bl & bl & bl & bl & bl & oa & bl & bl & bl & wh & bu & wh & wh & wh &     
+            oa & bl & bl & bl & bl & bl & bl & oa & bl & bl & wh & bu & wh & wh & wh & wh &     
+            oa & bl & bl & bl & bl & bl & bl & oa & bl & wh & bu & wh & wh & wh & wh & wh &     
+            oa & bl & bl & bl & bl & bl & bl & oa & wh & bu & wh & wh & wh & wh & wh & wh &     
+            bl & oa & bl & bl & bl & bl & oa & wh & bu & wh & wh & wh & wh & wh & wh & wh &     
+            bl & bl & oa & oa & oa & oa & wh & bu & wh & wh & wh & wh & wh & wh & wh & wh;
         when others =>
             matrix_16x16 <= (others => '0');
     end case;       

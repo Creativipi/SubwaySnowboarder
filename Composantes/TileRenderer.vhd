@@ -72,7 +72,7 @@ begin
             i_tile_id => i_tile_id,
             i_flip_y => i_flip_y,
             i_ch_tile_id => i_ch_tile_id,
-            i_ch_flip_y => i_ch_flip_y,
+            i_ch_flipY => i_ch_flip_y,
             i_clk => i_clk,
             o_tile_id => s_tile_id,
             o_flip_y => s_flip_y,
