@@ -41,7 +41,7 @@ entity ActorMgmt is
         i_act_id : in STD_LOGIC_VECTOR (2 downto 0);
         i_newpos_x : in STD_LOGIC_VECTOR (9 downto 0);
         i_newpos_y : in STD_LOGIC_VECTOR (9 downto 0);
-        i_tile_id : in STD_LOGIC_VECTOR (3 downto 0);
+        i_tile_id : in STD_LOGIC_VECTOR (2 downto 0);
         i_flip_x : in STD_LOGIC;
         i_flip_y : in STD_LOGIC;
         i_ch_setpos : in STD_LOGIC;
@@ -51,7 +51,7 @@ entity ActorMgmt is
         i_clk : in STD_LOGIC;
  
         -- R?sultat : info du pixel
-        o_tile_id : out STD_LOGIC_VECTOR (3 downto 0);
+        o_tile_id : out STD_LOGIC_VECTOR (2 downto 0);
         o_flip_x : out STD_LOGIC;
         o_flip_y : out STD_LOGIC;
         o_pix_x : out STD_LOGIC_VECTOR (3 downto 0);
@@ -63,7 +63,7 @@ end ActorMgmt;
 architecture Behavioral of ActorMgmt is
     -- Sparse array de 8 acteurs
     type pos_array_t is array (0 to 7) of std_logic_vector(9 downto 0);
-    type tile_array_t is array (0 to 7) of std_logic_vector(3 downto 0);
+    type tile_array_t is array (0 to 7) of std_logic_vector(2 downto 0);
     type flip_array_t is array (0 to 7) of std_logic;
  
     signal actor_pos_x : pos_array_t := (
@@ -79,7 +79,7 @@ signal actor_pos_y : pos_array_t := (
 );
  
 signal actor_tile_id : tile_array_t := (
-    others => std_logic_vector(to_unsigned(0, 4))
+    others => std_logic_vector(to_unsigned(0, 3))
 );
  
     signal actor_flip_x : flip_array_t := (others => '0');
