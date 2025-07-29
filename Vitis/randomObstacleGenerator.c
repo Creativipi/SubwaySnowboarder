@@ -3,7 +3,7 @@
 int generateObstacleMask(float difficulty, int *numLines) {
     int values[] = {3, 5, 7, 9, 11, 13};
     int numValues = sizeof(values) / sizeof(values[0]);
-    int index = (int)roundf(difficulty * (numValues - 1));
+    int index = (int)(difficulty * (numValues - 1) + 0.5f);
     if (index > 5) index = 5; // Cap index to the maximum value
     *numLines = values[index];
 

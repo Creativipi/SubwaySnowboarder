@@ -100,7 +100,7 @@ begin
         ) else '0';
     end generate;
  
-    -- Résolution: acteur de plus haute priorité (ID plus bas)
+    -- Rï¿½solution: acteur de plus haute prioritï¿½ (ID plus bas)
     process(i_clk, s_actor_hit, actor_tile_id, actor_flip_x, actor_flip_y, i_view_x, i_view_y, actor_pos_x, actor_pos_y)
         variable found : boolean := false;
         variable rel_x, rel_y : integer range 0 to 15;
