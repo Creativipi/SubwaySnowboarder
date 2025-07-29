@@ -71,7 +71,7 @@ component Controller is
     o_AM_newpos_x : out STD_LOGIC_VECTOR (9 downto 0);
     o_AM_newpos_y : out STD_LOGIC_VECTOR (9 downto 0);
     o_AM_act_id : out STD_LOGIC_VECTOR (2 downto 0);
-    o_AM_tile_id : out STD_LOGIC_VECTOR (3 downto 0);
+    o_AM_tile_id : out STD_LOGIC_VECTOR (2 downto 0);
 
     o_AM_flip_x : out STD_LOGIC;
     o_AM_flip_y : out STD_LOGIC;
@@ -146,7 +146,7 @@ Port (     i_view_x : in STD_LOGIC_VECTOR (9 downto 0);
            i_act_id : in STD_LOGIC_VECTOR (2 downto 0);
            i_newpos_x : in STD_LOGIC_VECTOR (9 downto 0);
            i_newpos_y : in STD_LOGIC_VECTOR (9 downto 0);
-           i_tile_id : in STD_LOGIC_VECTOR (3 downto 0);
+           i_tile_id : in STD_LOGIC_VECTOR (2 downto 0);
            i_flip_x : in STD_LOGIC;
            i_flip_y : in STD_LOGIC;
            i_ch_setpos : in STD_LOGIC;
@@ -154,8 +154,8 @@ Port (     i_view_x : in STD_LOGIC_VECTOR (9 downto 0);
            i_ch_tile_id : in STD_LOGIC;
            i_ch_flipX : in STD_LOGIC;
            i_ch_flipY : in STD_LOGIC;
-           --i_ch_x : in std_logic_vector( 3 downto 0);
-           --i_ch_y : in std_logic_vector( 3 downto 0);
+           i_ch_x : in std_logic_vector(3 downto 0);
+           i_ch_y : in std_logic_vector(3 downto 0);
            --i_ch_cc : in std_logic_vector (3 downto 0);
            --i_ch_we : in std_logic;
            i_clk : in STD_LOGIC;
@@ -164,8 +164,8 @@ Port (     i_view_x : in STD_LOGIC_VECTOR (9 downto 0);
            --o_pix_x : out STD_LOGIC_VECTOR (3 downto 0);
            --o_pix_y : out STD_LOGIC_VECTOR (3 downto 0);
            
-           
-           o_tile_id : out STD_LOGIC_VECTOR (3 downto 0);
+           i_tile_id_write : in std_logic_vector (2 downto 0);
+           o_tile_id : out STD_LOGIC_VECTOR (2 downto 0);
            o_is_actor_present : out std_logic;
            o_colorCode : out STD_LOGIC_VECTOR (3 downto 0));
 end component;
@@ -216,7 +216,7 @@ end component;
     signal Cont_AM_act_id : STD_LOGIC_VECTOR (2 downto 0);
     signal Cont_AM_newpos_x : STD_LOGIC_VECTOR (9 downto 0);
     signal Cont_AM_newpos_y : STD_LOGIC_VECTOR (9 downto 0);
-    signal Cont_AM_tile_id : STD_LOGIC_VECTOR (3 downto 0);
+    signal Cont_AM_tile_id : STD_LOGIC_VECTOR (2 downto 0);
     signal Cont_AM_flip_x : STD_LOGIC;
     signal Cont_AM_flip_y : STD_LOGIC;
     signal Cont_AM_ch_setpos : STD_LOGIC;
@@ -228,7 +228,7 @@ end component;
     signal TRA_NewPosX : STD_LOGIC_VECTOR (9 downto 0);
     signal TRA_NewPosY : STD_LOGIC_VECTOR (9 downto 0);
     signal TRA_act_id : std_logic_vector (2 downto 0);
-    
+    signal TRA_i_tile_id_write : std_logic_vector (2 downto 0);
     
     --MuxBackActor
     signal Cont_MBA_act_en : STD_LOGIC;
@@ -263,12 +263,14 @@ end component;
     signal TBB_color_code : std_logic_vector(3 downto 0);
     
     --Sorties ActorMgmt
-    signal AM_tile_id : STD_LOGIC_VECTOR (3 downto 0);
+    signal AM_tile_id : STD_LOGIC_VECTOR (2 downto 0);
     signal AM_flip_x : STD_LOGIC;
     signal AM_flip_y : STD_LOGIC;
     signal AM_pix_x : STD_LOGIC_VECTOR (3 downto 0);
     signal AM_pix_y : STD_LOGIC_VECTOR (3 downto 0);
     signal AM_is_actor_present : STD_LOGIC;
+    signal AM_ch_x : std_logic_vector (3 downto 0);
+    signal AM_ch_y : std_logic_vector (3 downto 0);
 
     
     --Sortie TuileBufActor
@@ -375,12 +377,10 @@ port map(
            i_ch_tile_id => Cont_AM_ch_tile_id,
            i_ch_flipX => Cont_AM_ch_flip_X,
            i_ch_flipY => Cont_AM_ch_flip_Y,
+           i_ch_x => AM_ch_x,
+           i_ch_y => AM_ch_y,
            i_clk => i_clk,
-           --o_act_id =>  
-           --o_flip_x =>
-           --o_flip_y =>
-           --o_pix_x =>
-           --o_pix_y =>
+           i_tile_id_write => TRA_i_tile_id_write,
            o_tile_id => AM_tile_id,
            o_is_actor_present => AM_is_actor_present,
            o_colorCode => TBA_color_code

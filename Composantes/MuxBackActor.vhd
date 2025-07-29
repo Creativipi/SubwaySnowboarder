@@ -47,7 +47,7 @@ begin
     -- use i_is_actor_present to pick background or actor color ?
     --
     o_color_code <= i_act_color_code when i_is_actor_present = '1'
-    else i_back_color_code
+    else i_back_color_code;
     --
     
     --Basiqument, si i_act_color_code n'�gal pas 16, c'est i_act_color_code qui est envoy�, sinon, c'est i_back_color_code
