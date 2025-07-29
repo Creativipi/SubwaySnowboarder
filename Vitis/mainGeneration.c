@@ -17,6 +17,9 @@ int main() {
     int setView;
 	int viewportY = 1023; // Start at the maximum value for y
 
+    const int COL_WIDTH = 6; // Width of each column in tiles
+    const int SPACE_BETWEEN_OBSTACLES_ROWS = 128; // Space between obstacles in rows in pixels, must be a multiple of 2
+
     int currentLine = 0;
 	int flag = 0;
 	int setBackTile;
@@ -38,13 +41,13 @@ int main() {
 		setView = cmdGenSetView(4, viewportY);
 		MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setView);
 
-        if (viewportY % 64 == 0) {
-            newTileY = viewportY - 64;
-            rmvTileY = viewportY + 384; // 384 = 6 * 64 donc 7 rangées existent en même temps
+        if (viewportY % SPACE_BETWEEN_OBSTACLES_ROWS == 0) {
+            newTileY = viewportY - SPACE_BETWEEN_OBSTACLES_ROWS;
+            rmvTileY = viewportY + (3 * SPACE_BETWEEN_OBSTACLES_ROWS); // 3 * 128 donc 4 rangées existent en même temps
 
-            if (viewportY == 0) {
+            if (newTileY < 0) {
                 newTileY += 1024; // Adjust for the wrap-around
-            } else if (viewportY >= 640){
+            } else if (rmvTileY > 1023){
                 rmvTileY -= 1024; // Adjust for the wrap-around
             }
 
@@ -62,10 +65,10 @@ int main() {
             // printf("New Tile Y: %d, Remove Tile Y: %d\n", newTileY, rmvTileY);
 
             int obstacleMask = generateObstacleMask(globalCounter/100000.0f, &numLines);
-            tileX = ((13 - numLines) / 2) * 6;
+            tileX = ((13 - numLines) / 2) * COL_WIDTH;
             while (currentLine <= numLines - 1) {
                 if (currentLine != 0) {
-                    tileX += 6;
+                    tileX += COL_WIDTH;
                 }
 
                 bitIndex = (numLines - 1) - currentLine;
