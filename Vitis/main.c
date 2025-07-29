@@ -1,4 +1,4 @@
-#include "scaler.h"
+#include "scaler.h" 
 #include "vdma.h"
 #include "xil_printf.h"
 #include "myColorRegister.h"
@@ -6,27 +6,50 @@
 
 int main()
 {
-	configureScaler();
+    configureScaler();
     configureVdma();
 
     int viewPortOffset = 0;
     int n = 0;
-	// Mask x and y to 10 bits in case of overflow (x=0 here)
+    int frameCount = 0;
     unsigned int x = 0 & 0x3FF;
     unsigned int y = 0;
     unsigned int instruction;
 
+    // Define actor position sequence
+    int actor_positions[3] = {
+        {100,
+        200,
+        300}
+    };
+    int i = 0;
+
     while(1)
     {
-		viewPortOffset = 64*n;
-		y = viewPortOffset & 0x3FF;
+        // Background scroll
+        viewPortOffset = 64 * n;
+        y = viewPortOffset & 0x3FF;
 
-		// Encode SetView instruction:
-		// opcode[31:28] | zero[27:24] | x[23:14] | y[13:4] | zero[3:0]
-		instruction = (0x1 << 28) | (x << 14) | (y << 4);
-		MYCONTROLLERPPU_mWriteReg(XPAR_MYCONTROLLLERPPU_0_S00_AXI_BASEADDR, 0, instruction);
-		n = (n+1)%9;
-		sleep(1);
+        // Encode SetView instruction
+        instruction = (0x1 << 28) | (x << 14) | (y << 4);
+        MYCONTROLLERPPU_mWriteReg(XPAR_MYCONTROLLLERPPU_0_S00_AXI_BASEADDR, 0, instruction);
+
+        // Every 300 frames, update actor position
+        if (frameCount % 300 == 0)
+        {
+            frameCount = 0;
+            int ax = actor_positions[i] & 0x3FF;
+            int ay = actor_positions[i] & 0x3FF;
+
+            instruction = (0x3 << 28) | (0x0 << 25) | (1 << 24) | (ax << 14) | (ay << 4);
+            MYCONTROLLERPPU_mWriteReg(XPAR_MYCONTROLLLERPPU_0_S00_AXI_BASEADDR, 0, instruction);
+
+            i = (i + 1) % 3;
+        }
+
+        n = (n + 1) % 9;
+        frameCount++;
+        sleep(1);
     }
 
     return 0;
