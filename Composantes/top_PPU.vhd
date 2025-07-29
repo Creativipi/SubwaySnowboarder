@@ -140,6 +140,37 @@ Port (     i_view_x : in STD_LOGIC_VECTOR (9 downto 0); -- position x du pixel ?
            o_colorCode : out STD_LOGIC_VECTOR (3 downto 0));
 end component;
 
+component TileRendererActor is
+Port (     i_view_x : in STD_LOGIC_VECTOR (9 downto 0);
+           i_view_y : in STD_LOGIC_VECTOR (9 downto 0);
+           i_act_id : in STD_LOGIC_VECTOR (2 downto 0);
+           i_newpos_x : in STD_LOGIC_VECTOR (9 downto 0);
+           i_newpos_y : in STD_LOGIC_VECTOR (9 downto 0);
+           i_tile_id : in STD_LOGIC_VECTOR (3 downto 0);
+           i_flip_x : in STD_LOGIC;
+           i_flip_y : in STD_LOGIC;
+           i_ch_setpos : in STD_LOGIC;
+           i_ch_movepos : in STD_LOGIC;
+           i_ch_tile_id : in STD_LOGIC;
+           i_ch_flipX : in STD_LOGIC;
+           i_ch_flipY : in STD_LOGIC;
+           --i_ch_x : in std_logic_vector( 3 downto 0);
+           --i_ch_y : in std_logic_vector( 3 downto 0);
+           --i_ch_cc : in std_logic_vector (3 downto 0);
+           --i_ch_we : in std_logic;
+           i_clk : in STD_LOGIC;
+           --o_flip_x : out STD_LOGIC;
+           --o_flip_y : out STD_LOGIC;
+           --o_pix_x : out STD_LOGIC_VECTOR (3 downto 0);
+           --o_pix_y : out STD_LOGIC_VECTOR (3 downto 0);
+           
+           
+           o_tile_id : out STD_LOGIC_VECTOR (3 downto 0);
+           o_is_actor_present : out std_logic;
+           o_colorCode : out STD_LOGIC_VECTOR (3 downto 0));
+end component;
+
+
 component MuxBackActor is
   port (
     i_back_color_code : in STD_LOGIC_VECTOR (3 downto 0);
@@ -193,6 +224,12 @@ end component;
     signal Cont_AM_ch_tile_id : STD_LOGIC;
     signal Cont_AM_ch_flip_X : STD_LOGIC;
     signal Cont_AM_ch_flip_Y : STD_LOGIC;
+    -- TileRenderActor Inputs
+    signal TRA_NewPosX : STD_LOGIC_VECTOR (9 downto 0);
+    signal TRA_NewPosY : STD_LOGIC_VECTOR (9 downto 0);
+    signal TRA_act_id : std_logic_vector (2 downto 0);
+    
+    
     --MuxBackActor
     signal Cont_MBA_act_en : STD_LOGIC;
     --ColorConvertor
@@ -321,6 +358,32 @@ port map(
       i_ch_cc => CONT_BM_new_cc,
       i_ch_we => CONT_BM_write_enable_pix,
       o_colorCode => TBB_color_code
+);
+
+TileRendererActor_0 : component TileRendererActor
+port map(
+           i_view_x => View_x,
+           i_view_y => View_y,
+           i_act_id => Cont_AM_act_id,
+           i_tile_id => Cont_AM_tile_id,
+           i_newpos_x => Cont_AM_newpos_x,
+           i_newpos_y => Cont_AM_newpos_y,
+           i_flip_x => Cont_AM_flip_x,
+           i_flip_y => Cont_AM_flip_y,
+           i_ch_setpos => Cont_AM_ch_setpos,
+           i_ch_movepos => Cont_AM_ch_movepos,
+           i_ch_tile_id => Cont_AM_ch_tile_id,
+           i_ch_flipX => Cont_AM_ch_flip_X,
+           i_ch_flipY => Cont_AM_ch_flip_Y,
+           i_clk => i_clk,
+           --o_act_id =>  
+           --o_flip_x =>
+           --o_flip_y =>
+           --o_pix_x =>
+           --o_pix_y =>
+           o_tile_id => AM_tile_id,
+           o_is_actor_present => AM_is_actor_present,
+           o_colorCode => TBA_color_code
 );
     
 MuxBackActor_0 : component MuxBackActor

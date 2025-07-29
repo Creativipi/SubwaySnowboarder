@@ -40,8 +40,8 @@ entity Tuile_16x16 is
            i_x : in STD_LOGIC_VECTOR (3 downto 0);
            i_y : in STD_LOGIC_VECTOR (3 downto 0);
            i_clk : in STD_LOGIC;
-           i_ch_x : in STD_LOGIC_VECTOR (3 downto 0);
-           i_ch_y : in STD_LOGIC_VECTOR (3 downto 0);
+           --i_ch_x : in STD_LOGIC_VECTOR (3 downto 0);
+           --i_ch_y : in STD_LOGIC_VECTOR (3 downto 0);
            i_ch_cc : in STD_LOGIC_VECTOR (3 downto 0);
            i_ch_we : in STD_LOGIC;
            o_cc : out STD_LOGIC_VECTOR (3 downto 0));
@@ -50,7 +50,7 @@ end Tuile_16x16;
 architecture Behavioral of Tuile_16x16 is
 
     component TuileActorBuffRegister is
-    Port ( i_tile_id : in std_logic_vector (3 downto 0);
+    Port ( i_tile_id : in std_logic_vector (2 downto 0);
            matrix_16x16 : out std_logic_vector (1023 downto 0)
            );
     end component;
@@ -76,7 +76,7 @@ begin
     
     uut_tuileActorBuffRegister : component TuileActorBuffRegister
     Port map (
-        i_tile_id => std_logic_vector(to_unsigned(TILE_ID, 4)),
+        i_tile_id => std_logic_vector(to_unsigned(TILE_ID, 3)),
         matrix_16x16 => initialMatrice
     );
     
@@ -87,7 +87,7 @@ begin
                 matrice16 <= to_matrix_array(initialMatrice);
                 matrixIsInitialized <= '1';
             elsif i_ch_we = '1' then
-                matrice16(TO_INTEGER(unsigned(i_ch_y)) * 16 + TO_INTEGER(unsigned(i_ch_x))) <= i_ch_cc;
+                --matrice16(TO_INTEGER(unsigned(i_ch_y)) * 16 + TO_INTEGER(unsigned(i_ch_x))) <= i_ch_cc;
             end if;
         end if;
     end process;
