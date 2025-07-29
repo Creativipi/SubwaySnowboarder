@@ -18,6 +18,8 @@ int columnDividerColorTileChoice(char color, bool isFirstIteration, bool newLine
         } else {
             tileId = 2;
         }
+    } else if (color == 't') {
+        tileId = 11;
     } else if (color == 'b') {
         if (isFirstIteration) {
             tileId = 9;
@@ -35,28 +37,31 @@ int main() {
     int setView;
 	int viewportY = 1023; // Start at the maximum value for y
 
+    const int TILE_SIZE = 8; // Size of each tile in pixels
     const int COL_WIDTH = 6; // Width of each column in tiles
     const int SPACE_BETWEEN_OBSTACLES_ROWS = 128; // Space between obstacles in rows in pixels, must be a multiple of 2
 
-    int currentLine = 0;
+    int currentLineObstacles = 0;
+    int currentLineColumnDivider = 0;
 	int flag = 0;
-    int jumpStartX;
+    int jumpStartX = 5 * COL_WIDTH;
 	int setBackTile;
 	int tileX = 0;
 	int newTileY = 0;
 	int rmvTileY = 0;
+	int newColumnDividerY = 0;
 
     int numLines = 3;
     int globalCounter = 0;
     int bitIndex;
     bool generateObstacle;
-    int previousNumLines = 0;
+    int previousNumLines = 3;
     bool isFirstIteration = true;
 
     PositionArray hazards;
     initArray(&hazards, 2); // Initialize the hazard array
 
-    usleep(100000);
+    sleep(2);
 
     while(1) {
 		setView = cmdGenSetView(4, viewportY);
@@ -76,24 +81,21 @@ int main() {
             rmvTileY = rmvTileY/8; // Convert to tile Y
 
             flag = 1;
-            currentLine = 0;
+            currentLineObstacles = 0;
         } else {
             flag = 0;
         }
 
-        jumpStartX = ((13 - numLines) / 2) * COL_WIDTH;
         if (flag == 1) {
-            // printf("Viewport Y: %d\n", viewportY);
-            // printf("New Tile Y: %d, Remove Tile Y: %d\n", newTileY, rmvTileY);
-
             int obstacleMask = generateObstacleMask(globalCounter/100000.0f, &numLines, 0);
+            jumpStartX = ((13 - numLines) / 2) * COL_WIDTH;
             tileX = jumpStartX;
-            while (currentLine < numLines) {
-                if (currentLine != 0) {
+            while (currentLineObstacles < numLines) {
+                if (currentLineObstacles != 0) {
                     tileX += COL_WIDTH;
                 }
 
-                bitIndex = (numLines - 1) - currentLine;
+                bitIndex = (numLines - 1) - currentLineObstacles;
                 generateObstacle = (obstacleMask >> bitIndex) & 1;
 
                 if (generateObstacle) {
@@ -121,7 +123,7 @@ int main() {
                     MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
                 }
 
-                currentLine++;
+                currentLineObstacles++;
             }
 
             for (int i = 0; i < hazards.size; i++) {
@@ -145,31 +147,42 @@ int main() {
                     i--; // Adjust index after deletion
                 }
             }
-
-            // printf("Hazards Size: %d\n", hazards.size);
         }
 
-        int columnDividerX;
-        bool newLine = false;
-        if (numLines != previousNumLines) {
-            newLine = true;
-        }
-
-        while (currentLine < numLines) {
-            if (currentLine == 0) {
-                columnDividerX = jumpStartX + 1;
-                setBackTile = cmdGenSetBackTile(columnDividerColorTileChoice('r', isFirstIteration, newLine), true, columnDividerX, viewportY - SPACE_BETWEEN_OBSTACLES_ROWS, false, false);
-            } else if (currentLine == numLines - 1) {
-                columnDividerX = jumpStartX + 1 + (COL_WIDTH * currentLine);
-                setBackTile = cmdGenSetBackTile(columnDividerColorTileChoice('r', isFirstIteration, newLine), true, columnDividerX, viewportY - SPACE_BETWEEN_OBSTACLES_ROWS, false, false);
-            } else {
-                columnDividerX = jumpStartX + 1 + (COL_WIDTH * currentLine);
-                setBackTile = cmdGenSetBackTile(columnDividerColorTileChoice('b', isFirstIteration, newLine), true, columnDividerX, viewportY - SPACE_BETWEEN_OBSTACLES_ROWS, false, false);
+        if (viewportY % TILE_SIZE == 0) {
+            int columnDividerX;
+            bool newLine = false;
+            if (numLines != previousNumLines) {
+                newLine = true;
             }
-            MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
+
+            newColumnDividerY = viewportY - SPACE_BETWEEN_OBSTACLES_ROWS;
+            if (newColumnDividerY < 0) {
+                newColumnDividerY += 1024; // Adjust for the wrap-around
+            }
+            newColumnDividerY = newColumnDividerY/8; // Convert to tile Y
+
+            currentLineColumnDivider = 0;
+            while (currentLineColumnDivider < numLines + 1) {
+                if (currentLineColumnDivider == 0) {
+                    columnDividerX = jumpStartX + 1;
+                    setBackTile = cmdGenSetBackTile(columnDividerColorTileChoice('r', isFirstIteration, newLine), true, columnDividerX, newColumnDividerY, false, false);
+                } else if (currentLineColumnDivider == numLines) {
+                    columnDividerX = jumpStartX + 1 + (COL_WIDTH * currentLineColumnDivider);
+                    setBackTile = cmdGenSetBackTile(columnDividerColorTileChoice('r', isFirstIteration, newLine), true, columnDividerX, newColumnDividerY, false, false);
+                } else if (newLine && (currentLineColumnDivider == 1 || currentLineColumnDivider == numLines - 1)) {
+                    columnDividerX = jumpStartX + 1 + (COL_WIDTH * currentLineColumnDivider);
+                    setBackTile = cmdGenSetBackTile(columnDividerColorTileChoice('t', isFirstIteration, newLine), true, columnDividerX, newColumnDividerY, false, false);
+                } else {
+                    columnDividerX = jumpStartX + 1 + (COL_WIDTH * currentLineColumnDivider);
+                    setBackTile = cmdGenSetBackTile(columnDividerColorTileChoice('b', isFirstIteration, newLine), true, columnDividerX, newColumnDividerY, false, false);
+                }
+                MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
+                currentLineColumnDivider++;
+            }
+            isFirstIteration = false;
+            previousNumLines = numLines;
         }
-        isFirstIteration = false;
-        previousNumLines = numLines;
         
         viewportY--;
 		if (viewportY < 0) {
