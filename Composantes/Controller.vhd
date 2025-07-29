@@ -45,7 +45,7 @@ entity Controller is
         o_AM_act_id     : out STD_LOGIC_VECTOR (2 downto 0) := (others => '0');
         o_AM_newpos_x   : out STD_LOGIC_VECTOR (9 downto 0) := (others => '0');
         o_AM_newpos_y   : out STD_LOGIC_VECTOR (9 downto 0) := (others => '0');
-        o_AM_tile_id    : out STD_LOGIC_VECTOR (3 downto 0) := (others => '0');
+        o_AM_tile_id    : out STD_LOGIC_VECTOR (2 downto 0) := (others => '0');
         o_AM_flip_X     : out STD_LOGIC := '0';
         o_AM_flip_Y     : out STD_LOGIC := '0';
         o_AM_ch_setpos  : out STD_LOGIC := '0';
@@ -160,7 +160,7 @@ begin
                 o_AM_newpos_y   <= i_instruction(13 downto 4);
             elsif opcode = "0100" then  -- SetActTile
                 o_AM_ch_tile_id <= i_instruction(24);
-                o_AM_tile_id    <= i_instruction(23 downto 20);
+                o_AM_tile_id    <= i_instruction(23 downto 21);
             end if;
 
             if opcode = "0100" or opcode = "0011" or opcode = "0010" then

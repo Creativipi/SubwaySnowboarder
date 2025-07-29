@@ -46,16 +46,16 @@ architecture Behavioral of MuxBackActor is
 begin
     -- use i_is_actor_present to pick background or actor color ?
     --
-    -- o_color_code <= i_act_color_code when i_is_actor_present = '1'
-    -- else i_back_color_code
+    o_color_code <= i_act_color_code when i_is_actor_present = '1'
+    else i_back_color_code;
     --
     
     --Basiqument, si i_act_color_code n'�gal pas 16, c'est i_act_color_code qui est envoy�, sinon, c'est i_back_color_code
-    s_isActorAlpha <= (i_act_color_code(0) AND i_act_color_code(1) AND i_act_color_code(2) AND i_act_color_code(3)) OR NOT(i_act_en);
+--    s_isActorAlpha <= (i_act_color_code(0) AND i_act_color_code(1) AND i_act_color_code(2) AND i_act_color_code(3)) OR NOT(i_act_en);
     
-    o_color_code(0) <= (i_back_color_code(0) AND s_isActorAlpha) OR (i_act_color_code(0) AND NOT(s_isActorAlpha));
-    o_color_code(1) <= (i_back_color_code(1) AND s_isActorAlpha) OR (i_act_color_code(1) AND NOT(s_isActorAlpha));
-    o_color_code(2) <= (i_back_color_code(2) AND s_isActorAlpha) OR (i_act_color_code(2) AND NOT(s_isActorAlpha));
-    o_color_code(3) <= (i_back_color_code(3) AND s_isActorAlpha) OR (i_act_color_code(3) AND NOT(s_isActorAlpha));
+--    o_color_code(0) <= (i_back_color_code(0) AND s_isActorAlpha) OR (i_act_color_code(0) AND NOT(s_isActorAlpha));
+--    o_color_code(1) <= (i_back_color_code(1) AND s_isActorAlpha) OR (i_act_color_code(1) AND NOT(s_isActorAlpha));
+--    o_color_code(2) <= (i_back_color_code(2) AND s_isActorAlpha) OR (i_act_color_code(2) AND NOT(s_isActorAlpha));
+--    o_color_code(3) <= (i_back_color_code(3) AND s_isActorAlpha) OR (i_act_color_code(3) AND NOT(s_isActorAlpha));
 
 end Behavioral;
