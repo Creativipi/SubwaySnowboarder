@@ -9,6 +9,7 @@
 #include "toVivado.h"
 #include "randomObstacleGenerator.h"
 #include "dynamicArrayHazards.h"
+#include "hazardGeneration.h"
 
 int columnDividerColorTileChoice(char color, bool isFirstIteration, bool newLine) {
     int tileId;
@@ -54,7 +55,7 @@ int main() {
     int numLines = 3;
     int globalCounter = 0;
     int bitIndex;
-    bool generateObstacle;
+    bool doGenerateObstacle;
     int previousNumLines = 3;
     bool isFirstIteration = true;
 
@@ -96,53 +97,20 @@ int main() {
                 }
 
                 bitIndex = (numLines - 1) - currentLineObstacles;
-                generateObstacle = (obstacleMask >> bitIndex) & 1;
+                doGenerateObstacle = (obstacleMask >> bitIndex) & 1;
 
-                if (generateObstacle) {
+                if (doGenerateObstacle) {
                     Positions obstacleHitZone;
-                    obstacleHitZone.x = tileX;
-                    obstacleHitZone.y = newTileY;
-                    obstacleHitZone.height = 16;
-                    obstacleHitZone.width = 24;
-                    obstacleHitZone.hazard = Rock;
+                    generateObstacle(tileX, newTileY, &obstacleHitZone);
                     push(&hazards, obstacleHitZone);
-
-                    setBackTile = cmdGenSetBackTile(6, true, tileX + 4, newTileY, false, false);
-                    MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
-
-                    setBackTile = cmdGenSetBackTile(5, true, tileX + 5, newTileY, false, false);
-                    MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
-
-                    setBackTile = cmdGenSetBackTile(3, true, tileX + 3, newTileY + 1, false, false);
-                    MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
-
-                    setBackTile = cmdGenSetBackTile(7, true, tileX + 4, newTileY + 1, false, false);
-                    MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
-
-                    setBackTile = cmdGenSetBackTile(8, true, tileX + 5, newTileY + 1, false, false);
-                    MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
                 }
 
                 currentLineObstacles++;
             }
 
             for (int i = 0; i < hazards.size; i++) {
-                if (hazards.data[i].y == rmvTileY) {
-                    setBackTile = cmdGenSetBackTile(0, true, hazards.data[i].x + 4, hazards.data[i].y, false, false);
-                    MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
-
-                    setBackTile = cmdGenSetBackTile(0, true, hazards.data[i].x + 5, hazards.data[i].y, false, false);
-                    MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
-
-                    setBackTile = cmdGenSetBackTile(0, true, hazards.data[i].x + 3, hazards.data[i].y + 1, false, false);
-                    MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
-
-                    setBackTile = cmdGenSetBackTile(0, true, hazards.data[i].x + 4, hazards.data[i].y + 1, false, false);
-                    MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
-
-                    setBackTile = cmdGenSetBackTile(0, true, hazards.data[i].x + 5, hazards.data[i].y + 1, false, false);
-                    MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
-
+                if (hazards.data[i].rmvTileY == rmvTileY) {
+                    deleteObstacle(hazards.data[i].tileX, hazards.data[i].rmvTileY);
                     deleteAt(&hazards, i);
                     i--; // Adjust index after deletion
                 }

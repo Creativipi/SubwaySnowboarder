@@ -1,5 +1,9 @@
 #include "dynamicArrayHazards.h"
 
+Dimensions getHazardDimensions(HazardType hazard) {
+    return hazardDimensions[hazard];
+}
+
 void initArray(PositionArray* arr, int initialCapacity) {
     arr->data = malloc(initialCapacity * sizeof(Positions));
     arr->size = 0;

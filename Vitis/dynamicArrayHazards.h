@@ -4,20 +4,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef enum
-{
-    Small_Tree,
+typedef enum {
+    Mini_Tree,
     Big_Tree,
-    Rock
-} Type;
+    Fat_Rock,
+    Mini_Rock,
+    Square_Rock,
+    Mega_Rock
+} HazardType;
 
-typedef struct
-{
+typedef struct {
     int x; // top left corner
     int y; // top left corner
-    int height;
-    int width;
-    Type hazard;
+    int tileX;
+	int rmvTileY;
+    HazardType hazardType;
 } Positions;
 
 typedef struct {
@@ -26,6 +27,21 @@ typedef struct {
     int capacity;
 } PositionArray;
 
+typedef struct {
+    int height;
+    int width;
+} Dimensions;
+
+static const Dimensions hazardDimensions[] = {
+    [Mini_Tree]   = {8, 8},
+    [Big_Tree]    = {24, 16},
+    [Fat_Rock]    = {8, 24},
+    [Mini_Rock]   = {8, 16},
+    [Square_Rock] = {16, 16},
+    [Mega_Rock]   = {16, 24}
+};
+
+Dimensions getHazardDimensions(HazardType hazard);
 void initArray(PositionArray* arr, int initialCapacity);
 void resizeArray(PositionArray* arr, int newCapacity);
 void push(PositionArray* arr, Positions pos);
