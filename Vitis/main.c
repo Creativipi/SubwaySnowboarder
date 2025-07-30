@@ -43,7 +43,6 @@ int main() {
     const int SPACE_BETWEEN_OBSTACLES_ROWS = 128; // Space between obstacles in rows in pixels, must be a multiple of 2
 
     int currentLineObstacles = 0;
-    int currentLineColumnDivider = 0;
 	int flag = 0;
     int jumpStartX = 5 * COL_WIDTH;
 	int setBackTile;
@@ -56,8 +55,21 @@ int main() {
     int globalCounter = 0;
     int bitIndex;
     bool doGenerateObstacle;
+
+    int currentLineColumnDivider = 0;
     int previousNumLines = 3;
     bool isFirstIteration = true;
+
+    int moveActPos;
+    int setActPos;
+    int setActTile;
+    // Define actor position sequence
+    int actor_positions[3] = {
+        100,
+        200,
+        300
+    };
+    int actorPosIncrementer = 0;
 
     PositionArray hazards;
     initArray(&hazards, 2); // Initialize the hazard array
@@ -150,6 +162,19 @@ int main() {
             }
             isFirstIteration = false;
             previousNumLines = numLines;
+        }
+
+        // Every 300 frames, update actor position
+        if (globalCounter % 300 == 0)
+        {
+            globalCounter = 0;
+            int ax = actor_positions[actorPosIncrementer] & 0x3FF;
+            int ay = actor_positions[actorPosIncrementer] & 0x3FF;
+
+            int instruction = (0x3 << 28) | (0x0 << 25) | (1 << 24) | (ax << 14) | (ay << 4);
+            MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, instruction);
+
+            actorPosIncrementer = (actorPosIncrementer + 1) % 3;
         }
         
         viewportY--;
