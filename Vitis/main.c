@@ -168,8 +168,8 @@ int main() {
         if (globalCounter % 300 == 0)
         {
             globalCounter = 0;
-            int ax = actor_positions[i] & 0x3FF;
-            int ay = actor_positions[i] & 0x3FF;
+            int ax = actor_positions[actorPosIncrementer] & 0x3FF;
+            int ay = actor_positions[actorPosIncrementer] & 0x3FF;
 
             int instruction = (0x3 << 28) | (0x0 << 25) | (1 << 24) | (ax << 14) | (ay << 4);
             MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, instruction);
