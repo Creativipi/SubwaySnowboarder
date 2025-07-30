@@ -3,11 +3,16 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 typedef struct {
-    int x;
-    int y;
     int tile;
+    bool flipX; // Flip horizontally
+    bool flipY; // Flip vertically
+    int xViewport; // Viewport X position
+    int yViewport; // Viewport Y position
+    int xBackground; // Background X position
+    int yBackground; // Background Y position
 } Actor;
 
 typedef struct {

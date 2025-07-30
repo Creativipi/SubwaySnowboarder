@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
+
+#include "xtime_l.h"
 
 #include "scaler.h"
 #include "vdma.h"
@@ -10,23 +13,29 @@
 #include "randomObstacleGenerator.h"
 #include "dynamicArrayHazards.h"
 #include "hazardGeneration.h"
+#include "dynamicArrayActors.h"
+#include "actorsMovements.h"
 
 int columnDividerColorTileChoice(char color, bool isFirstIteration, bool newLine) {
     int tileId;
-    if (color == 'r') {
+    switch (color) {
+    case 'r':
         if (isFirstIteration || newLine) {
             tileId = 10;
         } else {
             tileId = 2;
         }
-    } else if (color == 't') {
+        break;
+    case 't':
         tileId = 11;
-    } else if (color == 'b') {
+        break;
+    case 'b':
         if (isFirstIteration) {
             tileId = 9;
         } else {
             tileId = 1;
         }
+        break;
     }
     return tileId;
 }
@@ -35,12 +44,17 @@ int main() {
     configureScaler();
     configureVdma();
 
+    XTime t;
+    XTime_GetTime(&t);   // Get current timer value
+    srand((unsigned int)t); // Use it to seed rand()
+
     int setView;
 	int viewportY = 1023; // Start at the maximum value for y
 
     const int TILE_SIZE = 8; // Size of each tile in pixels
     const int COL_WIDTH = 6; // Width of each column in tiles
     const int SPACE_BETWEEN_OBSTACLES_ROWS = 128; // Space between obstacles in rows in pixels, must be a multiple of 2
+    const int SPACE_BETWEEN_COLUMN_DIVIDERS_SPAWN_AND_MAIN_ACTOR = 400; // Space between column dividers's spawn and main actor in pixels
 
     int currentLineObstacles = 0;
 	int flag = 0;
@@ -60,16 +74,16 @@ int main() {
     int previousNumLines = 3;
     bool isFirstIteration = true;
 
-    int moveActPos;
-    int setActPos;
-    int setActTile;
-    // Define actor position sequence
-    int actor_positions[3] = {
-        100,
-        200,
-        300
-    };
-    int actorPosIncrementer = 0;
+    int newPosRedColumnDividers[2] = {((jumpStartX + 1) * 8) + 7, (jumpStartX + 1 + (COL_WIDTH * 3)) * 8};
+    int currentPosRedColumnDividers[2] = {((jumpStartX + 1) * 8) + 7, (jumpStartX + 1 + (COL_WIDTH * 3)) * 8};
+    int counterUpdateCurrentPosRedColumnDividers = 0;
+    int numTimesMoveMainActor = 0;
+    int directionMainActor;
+    bool triedTurning = false;
+
+    ActorArray mainActor;
+    initActorArray(&mainActor, 2); // Initialize the actor array with a capacity
+    initializeActors(&mainActor);
 
     PositionArray hazards;
     initArray(&hazards, 2); // Initialize the hazard array
@@ -146,9 +160,11 @@ int main() {
             while (currentLineColumnDivider < numLines + 1) {
                 if (currentLineColumnDivider == 0) {
                     columnDividerX = jumpStartX + 1;
+                    newPosRedColumnDividers[0] = columnDividerX * 8 + 7; // Update the red line position
                     setBackTile = cmdGenSetBackTile(columnDividerColorTileChoice('r', isFirstIteration, newLine), true, columnDividerX, newColumnDividerY, false, false);
                 } else if (currentLineColumnDivider == numLines) {
                     columnDividerX = jumpStartX + 1 + (COL_WIDTH * currentLineColumnDivider);
+                    newPosRedColumnDividers[1] = columnDividerX * 8; // Update the red line position
                     setBackTile = cmdGenSetBackTile(columnDividerColorTileChoice('r', isFirstIteration, newLine), true, columnDividerX, newColumnDividerY, false, false);
                 } else if (newLine && (currentLineColumnDivider == 1 || currentLineColumnDivider == numLines - 1)) {
                     columnDividerX = jumpStartX + 1 + (COL_WIDTH * currentLineColumnDivider);
@@ -164,17 +180,33 @@ int main() {
             previousNumLines = numLines;
         }
 
-        // Every 300 frames, update actor position
-        if (globalCounter % 300 == 0)
-        {
-            globalCounter = 0;
-            int ax = actor_positions[actorPosIncrementer] & 0x3FF;
-            int ay = actor_positions[actorPosIncrementer] & 0x3FF;
+        if (newPosRedColumnDividers[0] != currentPosRedColumnDividers[0] || newPosRedColumnDividers[1] != currentPosRedColumnDividers[1]) {
+            counterUpdateCurrentPosRedColumnDividers++;
+            if (counterUpdateCurrentPosRedColumnDividers >= SPACE_BETWEEN_COLUMN_DIVIDERS_SPAWN_AND_MAIN_ACTOR) {
+                currentPosRedColumnDividers[0] = newPosRedColumnDividers[0];
+                currentPosRedColumnDividers[1] = newPosRedColumnDividers[1];
+                counterUpdateCurrentPosRedColumnDividers = 0;
+            }
+        }
 
-            int instruction = (0x3 << 28) | (0x0 << 25) | (1 << 24) | (ax << 14) | (ay << 4);
-            MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, instruction);
+        if (((viewportY + 64) % SPACE_BETWEEN_OBSTACLES_ROWS == 0) || numTimesMoveMainActor != 0) {
+            if (numTimesMoveMainActor == 0) {
+                directionMainActor = rand() % 3; // From 0 to 2
+                if (directionMainActor == 0 && (mainActor.data[0].xBackground - currentPosRedColumnDividers[0]) < 14) {
+                    directionMainActor = 1; // Change direction to straight if too close to the left red line
+                    triedTurning = true;
+                } else if (directionMainActor == 2 && (currentPosRedColumnDividers[1] - (mainActor.data[0].xBackground + 15)) < 14) {
+                    directionMainActor = 1; // Change direction to straight if too close to the right red line
+                    triedTurning = true;
+                }
+            }
 
-            actorPosIncrementer = (actorPosIncrementer + 1) % 3;
+            moveMainActor(directionMainActor, numTimesMoveMainActor, triedTurning, &mainActor);
+            numTimesMoveMainActor++;
+            if (numTimesMoveMainActor > 9) {
+                numTimesMoveMainActor = 0;
+                triedTurning = false;
+            }
         }
         
         viewportY--;

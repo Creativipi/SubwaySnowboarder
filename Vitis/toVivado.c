@@ -36,7 +36,7 @@ int cmdGenSetActTile(int act_id, bool ch_tile, int tile_id, bool ch_flipX, bool 
     int opcode = 0x4;
     act_id = MASK_N_BITS(act_id, 3); // Ensure act_id is within 3 bits
     tile_id = MASK_N_BITS(tile_id, 4); // Ensure tile_id is within 4 bits
-    return (opcode << 28) | (act_id << 25) | (ch_tile << 24) | (tile_id << 20) | (ch_flipX << 3) | (flipX << 2) | (ch_flipY << 1) | (flipY << 0);
+    return (opcode << 28) | (act_id << 25) | (ch_tile << 24) | (tile_id << 21) | (ch_flipX << 3) | (flipX << 2) | (ch_flipY << 1) | (flipY << 0);
 }
 
 int cmdGenSetBackTile(int tile_id, bool ch_tile, int x, int y, bool ch_flipY, bool flipY) {
