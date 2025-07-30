@@ -7,6 +7,7 @@ entity TuileBuffActor is
     Port(
     i_x : in STD_LOGIC_VECTOR (3 downto 0);
     i_y : in STD_LOGIC_VECTOR (3 downto 0);
+    i_actor_is_present : in STD_LOGIC;
     i_tile_id : in STD_LOGIC_VECTOR (2 downto 0);
     i_ch_x : in STD_LOGIC_VECTOR (3 downto 0);
     i_ch_y : in STD_LOGIC_VECTOR (3 downto 0);
@@ -15,6 +16,7 @@ entity TuileBuffActor is
     i_clk : in STD_LOGIC;
     i_flip_y : in STD_LOGIC;
     i_tile_id_write : in STD_LOGIC_VECTOR (2 downto 0);
+    o_is_actor_present : out std_logic;
     o_colorCode : out STD_LOGIC_VECTOR (3 downto 0));
 end TuileBuffActor;
 
@@ -34,7 +36,7 @@ constant lb : std_logic_vector (3 downto 0) := "1011"; -- Light Blue
 constant sb : std_logic_vector (3 downto 0) := "1100"; -- Sky Blue
 constant sa : std_logic_vector (3 downto 0) := "1101"; -- Salmon
 constant pi : std_logic_vector (3 downto 0) := "1110"; -- Pink
-constant pu : std_logic_vector (3 downto 0) := "1111"; -- Purple
+constant pu : std_logic_vector (3 downto 0) := "1111"; -- darker green
 
     type tuile_out_array_t is array (0 to 7) of std_logic_vector(3 downto 0);
     signal tuile_outputs : tuile_out_array_t;
@@ -48,24 +50,24 @@ constant pu : std_logic_vector (3 downto 0) := "1111"; -- Purple
 2 => bl,
 3 => bl,
 4 => bl,
-5 => bl,
-6 => bl,
-7 => bl,
-8 => bl,
-9 => bl,
-10 => bl,
-11 => bl,
-12 => bl,
-13 => bl,
-14 => bl,
-15 => bl,
-16 => bl,
-17 => bl,
-18 => bl,
-19 => bl,
-20 => bl,
-21 => bl,
-22 => bl,
+5 => pu,
+6 => pu,
+7 => pu,
+8 => pu,
+9 => pu,
+10 => pu,
+11 => pu,
+12 => pu,
+13 => pu,
+14 => pu,
+15 => pu,
+16 => pu,
+17 => pu,
+18 => pu,
+19 => pu,
+20 => pu,
+21 => pu,
+22 => pu,
 23 => bl,
 24 => bl,
 25 => bl,
@@ -2100,10 +2102,18 @@ begin
       process(i_tile_id, i_x, i_y)
           variable readIndex : std_logic_vector (10 downto 0);
           variable readIndex_int : integer;
+          variable transparent : std_logic;
+          variable readTuile : std_logic_vector (3 downto 0);
           begin
           readIndex := i_tile_id & i_y & i_x;
           readIndex_int := to_integer(unsigned(readIndex));
-          o_colorCode <= tile_data_map_d(readIndex_int);
+          readTuile := tile_data_map_d(readIndex_int);
+          if readTuile = pu then
+            o_is_actor_present <= '0';
+          elsif i_actor_is_present = '1' then
+            o_is_actor_present <= '1';
+          end if;
+          o_colorCode <= readTuile;
       end process;
       
       process(i_clk)

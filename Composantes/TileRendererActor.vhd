@@ -63,38 +63,8 @@ architecture Behavioral of TileRendererActor is
     signal s_ch_cc : STD_LOGIC_VECTOR (3 downto 0);
     signal s_ch_we : std_logic ;
     signal s_tile_id : std_logic_vector (2 downto 0);
-component ActorMgmt is
-  port (
-       i_view_x : in STD_LOGIC_VECTOR (9 downto 0);
-       i_view_y : in STD_LOGIC_VECTOR (9 downto 0);
-       i_act_id : in STD_LOGIC_VECTOR (2 downto 0);
-       i_newpos_x : in STD_LOGIC_VECTOR (9 downto 0);
-       i_newpos_y : in STD_LOGIC_VECTOR (9 downto 0);
-       i_flip_x : in STD_LOGIC;
-       i_flip_y : in STD_LOGIC;
-       i_ch_setpos : in STD_LOGIC;
-       i_ch_movepos : in STD_LOGIC;
-       i_ch_tile_id : in STD_LOGIC;
-       i_ch_flipX : in STD_LOGIC;
-       i_ch_flipY : in STD_LOGIC;
-       i_clk : in STD_LOGIC;
-       o_act_id : out STD_LOGIC_VECTOR (2 downto 0);
-       o_flip_x : out STD_LOGIC;
-       o_flip_y : out STD_LOGIC;
-       o_pix_x : out STD_LOGIC_VECTOR (3 downto 0);
-       o_pix_y : out STD_LOGIC_VECTOR (3 downto 0)
-  );
-end component;
- 
-component TuileBufActor is
-  port (
-    i_tile_id : in STD_LOGIC_VECTOR (2 downto 0);
-    i_flip_y : in STD_LOGIC;
-    i_pix_x : in STD_LOGIC_VECTOR (2 downto 0);
-    i_pix_y : in STD_LOGIC_VECTOR (2 downto 0);
-    o_color_code : out STD_LOGIC_VECTOR (3 downto 0)
-  );
-end component;
+    signal s_actor_present : std_logic;
+
 begin
     actorMgmt_inst : entity work.ActorMgmt
         port map (
@@ -115,13 +85,14 @@ begin
             o_flip_y => s_flip_y,
             o_pix_x => s_pix_x,
             o_pix_y => s_pix_y,
-            o_is_actor_present => o_is_actor_present
+            o_is_actor_present => s_actor_present
         );
     s_pix_x_flipped <= std_logic_vector(to_unsigned(15 - to_integer(unsigned(s_pix_x)), 4))
                    when s_flip_y = '1'
                    else s_pix_x;
     uut_tuileBuffActor : entity work.TuileBuffActor
     port map (
+        i_actor_is_present => s_actor_present,
         i_x => s_pix_x_flipped,
         i_y => s_pix_y,
         i_tile_id => s_tile_id,
@@ -132,7 +103,8 @@ begin
         i_clk => i_clk,
         i_flip_y => i_flip_y,
         i_tile_id_write => i_tile_id_write,
-        o_colorCode => o_colorCode
+        o_colorCode => o_colorCode,
+        o_is_actor_present => o_is_actor_present
     );
  
  
