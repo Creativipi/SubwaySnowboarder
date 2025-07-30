@@ -364,8 +364,8 @@ port map(
 
 TileRendererActor_0 : component TileRendererActor
 port map(
-           i_view_x => View_x,
-           i_view_y => View_y,
+           i_view_x => i_x (9 downto 0),
+           i_view_y => i_y (9 downto 0),
            i_act_id => Cont_AM_act_id,
            i_tile_id => Cont_AM_tile_id,
            i_newpos_x => Cont_AM_newpos_x,
