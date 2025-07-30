@@ -57,7 +57,7 @@ architecture Behavioral of ColorConvertor is
     signal r_couleur_12 : std_logic_vector(23 downto 0) := X"b3ffda";
     signal r_couleur_13 : std_logic_vector(23 downto 0) := X"ff9093";
     signal r_couleur_14 : std_logic_vector(23 downto 0) := X"fdffe2";
-    signal r_couleur_15 : std_logic_vector(23 downto 0) := X"b1a955";
+    signal r_couleur_15 : std_logic_vector(23 downto 0) := X"593086";
     signal rbg_color : std_logic_vector(23 downto 0);
     
     
@@ -108,7 +108,7 @@ begin
         end if;
     end if;
     
-    -- Ce qui est envoyé selon l'entrée
+    -- Ce qui est envoy  selon l'entr e
     case i_color_code is
         when "0000" => -- 0
             o_RBG <= r_couleur_0;
