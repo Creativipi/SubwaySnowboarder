@@ -57,9 +57,11 @@ end TileRendererActor;
  
 architecture Behavioral of TileRendererActor is
     signal s_flip_y : std_logic;
+    signal s_flip_x : std_logic;
     signal s_pix_x : std_logic_vector (3 downto 0);
     signal s_pix_y : std_logic_vector (3 downto 0);
     signal s_pix_x_flipped : std_logic_vector (3 downto 0);
+    signal s_pix_y_flipped : std_logic_vector (3 downto 0);
     signal s_ch_cc : STD_LOGIC_VECTOR (3 downto 0);
     signal s_ch_we : std_logic ;
     signal s_tile_id : std_logic_vector (2 downto 0);
@@ -88,13 +90,17 @@ begin
             o_is_actor_present => s_actor_present
         );
     s_pix_x_flipped <= std_logic_vector(to_unsigned(15 - to_integer(unsigned(s_pix_x)), 4))
-                   when s_flip_y = '1'
+                   when s_flip_x = '1'
                    else s_pix_x;
+   s_pix_y_flipped <= std_logic_vector(to_unsigned(15 - to_integer(unsigned(s_pix_y)), 4))
+   when s_flip_y = '1'
+   else s_pix_y;
+   
     uut_tuileBuffActor : entity work.TuileBuffActor
     port map (
         i_actor_is_present => s_actor_present,
         i_x => s_pix_x_flipped,
-        i_y => s_pix_y,
+        i_y => s_pix_y_flipped,
         i_tile_id => s_tile_id,
         i_ch_x => i_ch_x,
         i_ch_y => i_ch_y,
