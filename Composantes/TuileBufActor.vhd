@@ -7,14 +7,13 @@ entity TuileBuffActor is
     Port(
     i_x : in STD_LOGIC_VECTOR (3 downto 0);
     i_y : in STD_LOGIC_VECTOR (3 downto 0);
-    i_tile_id : in STD_LOGIC_VECTOR (2 downto 0);
+    i_tile_id : in STD_LOGIC_VECTOR (3 downto 0);
     i_ch_x : in STD_LOGIC_VECTOR (3 downto 0);
     i_ch_y : in STD_LOGIC_VECTOR (3 downto 0);
     i_ch_cc : in STD_LOGIC_VECTOR (3 downto 0);
     i_ch_we : in std_logic;
     i_clk : in STD_LOGIC;
-    i_flip_y : in STD_LOGIC;
-    i_tile_id_write : in STD_LOGIC_VECTOR (2 downto 0);
+    i_tile_id_write : in STD_LOGIC_VECTOR (3 downto 0);
     o_colorCode : out STD_LOGIC_VECTOR (3 downto 0));
 end TuileBuffActor;
 
@@ -40,7 +39,7 @@ constant pu : std_logic_vector (3 downto 0) := "1111"; -- Purple
     signal tuile_outputs : tuile_out_array_t;
     signal tuile_write_enable : std_logic_vector(7 downto 0);
     
-    type tile_d_array_t is array (0 to 2047) of std_logic_vector(3 downto 0);
+    type tile_d_array_t is array (0 to 4095) of std_logic_vector(3 downto 0);
     signal tile_data_map_d : tile_d_array_t :=
     (
 0 => pu,
@@ -2090,7 +2089,8 @@ constant pu : std_logic_vector (3 downto 0) := "1111"; -- Purple
 2044 => pu,
 2045 => pu,
 2046 => pu,
-2047 => pu
+2047 => pu,
+others => pu
     ); 
     
     attribute ram_style : string;
@@ -2098,7 +2098,7 @@ constant pu : std_logic_vector (3 downto 0) := "1111"; -- Purple
 begin
     
       process(i_tile_id, i_x, i_y)
-          variable readIndex : std_logic_vector (10 downto 0);
+          variable readIndex : std_logic_vector (11 downto 0);
           variable readIndex_int : integer;
           begin
           readIndex := i_tile_id & i_y & i_x;
@@ -2107,7 +2107,7 @@ begin
       end process;
       
       process(i_clk)
-      variable writeIndex : std_logic_vector (10 downto 0);
+      variable writeIndex : std_logic_vector (11 downto 0);
       variable writeIndex_int : integer;
       begin
         if rising_edge(i_clk) then
