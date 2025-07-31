@@ -10,7 +10,7 @@
 #include "myColorRegister.h"
 #include "sleep.h"
 #include "toVivado.h"
-#include "randomObstacleGenerator.h"
+#include "randomGenerator.h"
 #include "dynamicArrayHazards.h"
 #include "hazardGeneration.h"
 #include "dynamicArrayActors.h"
@@ -69,12 +69,12 @@ int main() {
 
     int numLines = 3;
     int globalCounter = 0;
-    int bitIndex;
-    bool doGenerateObstacle;
 
     int currentLineColumnDivider = 0;
     int previousNumLines = 3;
     bool isFirstIteration = true;
+
+    int currentLineSubways = 0;
 
     int newPosRedColumnDividers[2] = {((jumpStartX + 1) * 8) + 7, (jumpStartX + 1 + (COL_WIDTH * 3)) * 8};
     int currentPosRedColumnDividers[2] = {((jumpStartX + 1) * 8) + 7, (jumpStartX + 1 + (COL_WIDTH * 3)) * 8};
@@ -85,14 +85,17 @@ int main() {
 
     bool wasHit = false;
     int immunityCounter = 0;
-    int setActPos;
+    int setActTile;
 
     ActorArray mainActor;
-    initActorArray(&mainActor, 2); // Initialize the actor array with a capacity
+    initActorArray(&mainActor, 2); // Initialize the main actor array with a capacity
     initializeActors(&mainActor);
 
     PositionArray hazards;
     initArray(&hazards, 2); // Initialize the hazard array
+
+    ActorArray subways;
+    initActorArray(&subways, 2); // Initialize the subway array
 
     sleep(1);
 
@@ -124,29 +127,50 @@ int main() {
             jumpStartX = ((13 - numLines) / 2) * COL_WIDTH;
             tileX = jumpStartX;
             while (currentLineObstacles < numLines) {
-                if (currentLineObstacles != 0) {
-                    tileX += COL_WIDTH;
-                }
-
-                bitIndex = (numLines - 1) - currentLineObstacles;
-                doGenerateObstacle = (obstacleMask >> bitIndex) & 1;
+                int bitIndex = (numLines - 1) - currentLineObstacles;
+                bool doGenerateObstacle = (obstacleMask >> bitIndex) & 1;
 
                 if (doGenerateObstacle) {
-                    Positions obstacleHitZone;
-                    generateObstacle(tileX, newTileY, &obstacleHitZone);
-                    pushHazard(&hazards, obstacleHitZone);
+                    Positions obstacle;
+                    generateObstacle(tileX, newTileY, &obstacle);
+                    pushHazard(&hazards, obstacle);
                 }
 
+                tileX += COL_WIDTH;
                 currentLineObstacles++;
             }
 
             for (int i = 0; i < hazards.size; i++) {
                 if (hazards.data[i].rmvTileY == rmvTileY) {
                     deleteObstacle(hazards.data[i].tileX, hazards.data[i].rmvTileY);
-                    deleteAt(&hazards, i);
+                    deleteHazardAt(&hazards, i);
                     i--; // Adjust index after deletion
                 }
             }
+
+            // int subwayMask = generateSubwayMask(numLines);
+            // tileX = jumpStartX;
+            // while (currentLineSubways < numLines) {
+            //     int bitIndex = (numLines - 1) - currentLineSubways;
+            //     bool doGenerateSubway = (subwayMask >> bitIndex) & 1;
+
+            //     if (doGenerateSubway) {
+            //         Actor subway;
+            //         generateSubway(tileX, newTileY + 64, &subway, subways.size + 1);
+            //         pushActor(&subways, subway);
+            //     }
+
+            //     tileX += COL_WIDTH;
+            //     currentLineSubways++;
+            // }
+
+            // for (int i = 0; i < subways.size; i++) {
+            //     if (subways.data[i].yBackground / 8 == rmvTileY) {
+            //         // deleteObstacle(hazards.data[i].tileX, hazards.data[i].rmvTileY);
+            //         deleteActorAt(&subways, i);
+            //         i--; // Adjust index after deletion
+            //     }
+            // }
         }
 
         if (viewportY % TILE_SIZE == 0) {
@@ -209,7 +233,7 @@ int main() {
 
             moveMainActor(directionMainActor, numTimesMoveMainActor, triedTurning, &mainActor);
             numTimesMoveMainActor++;
-            if (numTimesMoveMainActor > 17) {
+            if (numTimesMoveMainActor > 25) {
                 numTimesMoveMainActor = 0;
                 triedTurning = false;
             }
@@ -227,32 +251,23 @@ int main() {
                 }
             }
         } else {
-            switch (immunityCounter) {
-            case 0:
-            case 40:
-            case 80:
-                setActPos = cmdGenSetActPos(1, true, 700, 700, false, false, false, false);
-                MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);
-                setActPos = cmdGenSetActPos(0, true, 700, 700, false, false, false, false);
-                MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);
-                break;
-            case 20:
-            case 60:
-            case 100:
-                setActPos = cmdGenSetActPos(1, true, mainActor.data[0].xViewport, mainActor.data[0].yViewport, false, false, false, false);
-                MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);
-                setActPos = cmdGenSetActPos(0, true, mainActor.data[1].xViewport, mainActor.data[1].yViewport, false, false, false, false);
-                MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);
-                break;
-            default:
-                break;
+            if (immunityCounter < 20 || (immunityCounter > 39 && immunityCounter < 60) || (immunityCounter > 79 && immunityCounter < 100)) {
+                setActTile = cmdGenSetActTile(1, true, 8, false, false, false, false);
+                MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
+                setActTile = cmdGenSetActTile(0, true, 8, false, false, false, false);
+                MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
+            } else if ((immunityCounter > 19 && immunityCounter < 40) || (immunityCounter > 59 && immunityCounter < 80) || immunityCounter > 99) {
+                setActTile = cmdGenSetActTile(1, true, mainActor.data[0].tile, false, false, false, false);
+                MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
+                setActTile = cmdGenSetActTile(0, true, mainActor.data[1].tile, false, false, false, false);
+                MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
             }
 
             if (immunityCounter > 99) {
                 immunityCounter = 0; // Reset immunity counter after a certain time
+                wasHit = false; // Reset hit status
             } else {
                 immunityCounter++;
-                wasHit = false; // Reset hit status
             }
         }
 

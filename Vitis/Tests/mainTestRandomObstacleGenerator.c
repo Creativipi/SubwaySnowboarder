@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "randomObstacleGenerator.h"
+#include "randomGenerator.h"
 
 void printBinary(int n) {
     for (int i = 31; i >= 0; i--) {
@@ -27,7 +27,7 @@ int main()
         
         int numLines;
 
-        int obstacleMask = generateObstacleMask(difficulty, &numLines);
+        int obstacleMask = generateObstacleMask(difficulty, &numLines, 0);
         printf("Time %2d | Difficulty: %.4f | Obstacles: ", time, difficulty);
         printObstacleLines(obstacleMask, numLines);
     }

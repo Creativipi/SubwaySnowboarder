@@ -45,7 +45,7 @@ Dimensions getHazardDimensions(HazardType hazard);
 void initArray(PositionArray* arr, int initialCapacity);
 void resizeArray(PositionArray* arr, int newCapacity);
 void pushHazard(PositionArray* arr, Positions pos);
-void deleteAt(PositionArray* arr, int index);
+void deleteHazardAt(PositionArray* arr, int index);
 void freeArray(PositionArray* arr);
 
 #endif

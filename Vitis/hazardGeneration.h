@@ -10,7 +10,7 @@
 #include "xil_printf.h"
 #include "myColorRegister.h"
 
-void generateObstacle(int tileX, int tileY, Positions* obstacleHitZone);
+void generateObstacle(int tileX, int tileY, Positions* obstacle);
 void deleteObstacle(int tileX, int tileY);
 
 #endif

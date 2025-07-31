@@ -23,7 +23,7 @@ void pushHazard(PositionArray* arr, Positions pos){
     arr->size++;
 }
 
-void deleteAt(PositionArray* arr, int index){
+void deleteHazardAt(PositionArray* arr, int index){
     if (index < 0 || index >= arr->size) {
         printf("Index is invalid");
         return;

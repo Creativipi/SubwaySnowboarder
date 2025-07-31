@@ -1,4 +1,4 @@
-#include "randomObstacleGenerator.h"
+#include "randomGenerator.h"
 
 int generateObstacleMask(float difficulty, int *numLines, int mode) {
     if (mode < 0 || mode > 1) {
@@ -120,4 +120,23 @@ void printObstacleLines(int mask, int numLines) {
         }
     }
     printf(" (0x%X) %i/%i\n", mask, counter, numLines);
+}
+
+int generateSubwayMask(int numLines) {
+    int mask = 0;
+    int numBitsToSet = (rand() % 5) - 3;
+    
+    if (numBitsToSet < 0) {
+        numBitsToSet = 0;
+    }
+
+    while (numBitsToSet > 0) {
+        int bit = rand() % numLines;
+        if (!(mask & (1 << bit))) {
+            mask |= (1 << bit);
+            numBitsToSet--;
+        }
+    }
+
+    return mask;
 }

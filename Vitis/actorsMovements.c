@@ -37,8 +37,8 @@ void initializeActors(ActorArray* mainActor) {
     pushActor(mainActor, actor0); // Add the second actor to the array
 
     for (int i = 2; i < 8; i++) {
-        setActPos = cmdGenSetActPos(i, true, 700, 700, false, false, false, false);
-        MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);
+        setActTile = cmdGenSetActTile(i, true, 8, false, false, false, false);
+        MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
     }
 }
 
@@ -52,63 +52,63 @@ void moveMainActor(int direction, int numTimes, bool triedTurning, ActorArray* m
                 mainActor->data[0].tile = 1;
                 mainActor->data[0].flipX = true;
                 mainActor->data[0].xViewport -= 9;
-                mainActor->data[0].yViewport += 9;
+                mainActor->data[0].yViewport += 7;
                 mainActor->data[0].xBackground -= 9;
-                mainActor->data[0].yBackground += 9;
+                mainActor->data[0].yBackground += 7;
 
                 mainActor->data[1].tile = 0;
                 mainActor->data[1].flipX = true;
-            } else if (numTimes == 17) {
+            } else if (numTimes == 25) {
                 mainActor->data[0].tile = 2;
                 mainActor->data[0].flipX = false;
                 mainActor->data[0].xViewport += 9;
-                mainActor->data[0].yViewport -= 9;
+                mainActor->data[0].yViewport -= 7;
                 mainActor->data[0].xBackground += 9;
-                mainActor->data[0].yBackground -= 9;
+                mainActor->data[0].yBackground -= 7;
 
                 mainActor->data[1].tile = 3;
                 mainActor->data[1].flipX = false;
             } else {
-                mainActor->data[0].xViewport -= 3;
-                mainActor->data[0].xBackground -= 3;
+                mainActor->data[0].xViewport -= 2;
+                mainActor->data[0].xBackground -= 2;
 
-                mainActor->data[1].xViewport -= 3;
-                mainActor->data[1].xBackground -= 3;
+                mainActor->data[1].xViewport -= 2;
+                mainActor->data[1].xBackground -= 2;
             }
             break;
         case 1: // Straight
             if (triedTurning) {
-                if (numTimes % 6 == 0) {
+                if (numTimes % 8 == 0) {
                     if (numTimes == 0) {
                         mainActor->data[0].tile = 1;
                         mainActor->data[0].flipX = true;
                         mainActor->data[0].xViewport -= 9;
-                        mainActor->data[0].yViewport += 9;
+                        mainActor->data[0].yViewport += 7;
                         mainActor->data[0].xBackground -= 9;
-                        mainActor->data[0].yBackground += 9;
+                        mainActor->data[0].yBackground += 7;
 
                         mainActor->data[1].tile = 0;
                         mainActor->data[1].flipX = true;
-                    } else if (numTimes == 6) {
+                    } else if (numTimes == 8) {
                         mainActor->data[0].flipX = false;
                         mainActor->data[0].xViewport += 18;
                         mainActor->data[0].xBackground += 18;
 
                         mainActor->data[1].flipX = false;
-                    } else if (numTimes == 12) {
+                    } else if (numTimes == 16) {
                         mainActor->data[0].flipX = true;
                         mainActor->data[0].xViewport -= 18;
                         mainActor->data[0].xBackground -= 18;
 
                         mainActor->data[1].flipX = true;
                     }
-                } else if (numTimes == 17) {
+                } else if (numTimes == 25) {
                     mainActor->data[0].tile = 2;
                     mainActor->data[0].flipX = false;
                     mainActor->data[0].xViewport += 9;
-                    mainActor->data[0].yViewport -= 9;
+                    mainActor->data[0].yViewport -= 7;
                     mainActor->data[0].xBackground += 9;
-                    mainActor->data[0].yBackground -= 9;
+                    mainActor->data[0].yBackground -= 7;
 
                     mainActor->data[1].tile = 3;
                     mainActor->data[1].flipX = false;
@@ -119,35 +119,52 @@ void moveMainActor(int direction, int numTimes, bool triedTurning, ActorArray* m
             if (numTimes == 0) {
                 mainActor->data[0].tile = 1;
                 mainActor->data[0].xViewport += 9;
-                mainActor->data[0].yViewport += 9;
+                mainActor->data[0].yViewport += 7;
                 mainActor->data[0].xBackground += 9;
-                mainActor->data[0].yBackground += 9;
+                mainActor->data[0].yBackground += 7;
 
                 mainActor->data[1].tile = 0;
-            } else if (numTimes == 17) {
+            } else if (numTimes == 25) {
                 mainActor->data[0].tile = 2;
                 mainActor->data[0].xViewport -= 9;
-                mainActor->data[0].yViewport -= 9;
+                mainActor->data[0].yViewport -= 7;
                 mainActor->data[0].xBackground -= 9;
-                mainActor->data[0].yBackground -= 9;
+                mainActor->data[0].yBackground -= 7;
 
                 mainActor->data[1].tile = 3;
             } else {
-                mainActor->data[0].xViewport += 3;
-                mainActor->data[0].xBackground += 3;
+                mainActor->data[0].xViewport += 2;
+                mainActor->data[0].xBackground += 2;
 
-                mainActor->data[1].xViewport += 3;
-                mainActor->data[1].xBackground += 3;
+                mainActor->data[1].xViewport += 2;
+                mainActor->data[1].xBackground += 2;
             }
             break;
     }
 
     setActTile = cmdGenSetActTile(1, true, mainActor->data[0].tile, true, mainActor->data[0].flipX, true, mainActor->data[0].flipY);
     MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
-    setActPos = cmdGenSetActPos(1, true, mainActor->data[0].xViewport, mainActor->data[0].yViewport, true, mainActor->data[0].flipX, true, mainActor->data[0].flipY);
+    setActPos = cmdGenSetActPos(1, true, mainActor->data[0].xViewport, mainActor->data[0].yViewport, false, mainActor->data[0].flipX, false, mainActor->data[0].flipY);
     MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);
     setActTile = cmdGenSetActTile(0, true, mainActor->data[1].tile, true, mainActor->data[1].flipX, true, mainActor->data[1].flipY);
     MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
-    setActPos = cmdGenSetActPos(0, true, mainActor->data[1].xViewport, mainActor->data[1].yViewport, true, mainActor->data[1].flipX, true, mainActor->data[1].flipY);
+    setActPos = cmdGenSetActPos(0, true, mainActor->data[1].xViewport, mainActor->data[1].yViewport, false, mainActor->data[1].flipX, false, mainActor->data[1].flipY);
+    MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);
+}
+
+void generateSubway(int tileX, int tileY, Actor* subway, int disponibleSubway) {
+    int setActTile;
+    int setActPos;
+
+    subway->tile = 4;
+    subway->flipX = false;
+    subway->flipY = false;
+    subway->xViewport = (tileX * 8) - 4;
+    subway->yViewport = -64;
+    subway->xBackground = tileX * 8;
+    subway->yBackground = tileY * 8;
+    setActTile = cmdGenSetActTile(disponibleSubway, true, subway->tile, true, subway->flipX, true, subway->flipY);
+    MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
+    setActPos = cmdGenSetActPos(disponibleSubway, true, subway->xViewport, subway->yViewport, true, subway->flipX, true, subway->flipY);
     MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);
 }

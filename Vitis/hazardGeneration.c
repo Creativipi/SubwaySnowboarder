@@ -1,20 +1,20 @@
 #include "hazardGeneration.h"
 
-void generateObstacle(int tileX, int tileY, Positions* obstacleHitZone) {
+void generateObstacle(int tileX, int tileY, Positions* obstacle) {
     // Generate a random hazard type for the obstacle
-    obstacleHitZone->hazardType = (HazardType)(rand() % (Mega_Rock + 1));
-    obstacleHitZone->tileX = tileX;
-    obstacleHitZone->rmvTileY = tileY;
+    obstacle->hazardType = (HazardType)(rand() % (Mega_Rock + 1));
+    obstacle->tileX = tileX;
+    obstacle->rmvTileY = tileY;
 
     int asymetrical = (rand() % 2); // Randomly chooses where an asymmetrical obstacle will be placed
     int setBackTile;
-    switch (obstacleHitZone->hazardType) {
+    switch (obstacle->hazardType) {
     case Mini_Tree:
         setBackTile = cmdGenSetBackTile(18, true, tileX + 4, tileY, false, false);
         MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
 
-        obstacleHitZone->x = tileX * 8 + 4;
-        obstacleHitZone->y = tileY * 8;
+        obstacle->x = (tileX + 4) * 8;
+        obstacle->y = tileY * 8;
         break;
         
     case Big_Tree:
@@ -33,8 +33,8 @@ void generateObstacle(int tileX, int tileY, Positions* obstacleHitZone) {
         setBackTile = cmdGenSetBackTile(17, true, tileX + 4 + asymetrical, tileY, false, false);
         MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
 
-        obstacleHitZone->x = tileX + 3 + asymetrical;
-        obstacleHitZone->y = tileY - 2;
+        obstacle->x = (tileX + 3 + asymetrical) * 8;
+        obstacle->y = (tileY - 2) * 8;
         break;
 
     case Fat_Rock:
@@ -45,8 +45,8 @@ void generateObstacle(int tileX, int tileY, Positions* obstacleHitZone) {
         setBackTile = cmdGenSetBackTile(5, true, tileX + 5, tileY, false, false);
         MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
 
-        obstacleHitZone->x = tileX + 3;
-        obstacleHitZone->y = tileY;
+        obstacle->x = (tileX + 3) * 8;
+        obstacle->y = tileY * 8;
         break;
 
     case Mini_Rock:
@@ -55,8 +55,8 @@ void generateObstacle(int tileX, int tileY, Positions* obstacleHitZone) {
         setBackTile = cmdGenSetBackTile(5, true, tileX + 4 + asymetrical, tileY, false, false);
         MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
 
-        obstacleHitZone->x = tileX + 3 + asymetrical;
-        obstacleHitZone->y = tileY;
+        obstacle->x = (tileX + 3 + asymetrical) * 8;
+        obstacle->y = tileY * 8;
         break;
 
     case Square_Rock:
@@ -70,8 +70,8 @@ void generateObstacle(int tileX, int tileY, Positions* obstacleHitZone) {
         setBackTile = cmdGenSetBackTile(8, true, tileX + 4 + asymetrical, tileY, false, false);
         MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
 
-        obstacleHitZone->x = tileX + 3 + asymetrical;
-        obstacleHitZone->y = tileY - 1;
+        obstacle->x = (tileX + 3 + asymetrical) * 8;
+        obstacle->y = (tileY - 1) * 8;
         break;
 
     case Mega_Rock:
@@ -87,8 +87,8 @@ void generateObstacle(int tileX, int tileY, Positions* obstacleHitZone) {
         setBackTile = cmdGenSetBackTile(8, true, tileX + 5, tileY, false, false);
         MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
 
-        obstacleHitZone->x = tileX + 4;
-        obstacleHitZone->y = tileY - 1;
+        obstacle->x = (tileX + 3) * 8;
+        obstacle->y = (tileY - 1) * 8;
         break;
     }
 }
