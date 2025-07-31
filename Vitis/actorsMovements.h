@@ -11,6 +11,6 @@
 void initializeActors(ActorArray* mainActor);
 void moveMainActor(int direction, int numTimes, bool triedTurning, ActorArray* mainActor);
 void generateSubway(int tileX, int tileY, Actor* subway, int disponibleSubway);
-void deleteSubway(ActorArray* subways, int actorIndex, int indexInSubways);
+void deleteSubway(ActorArray* subways, int indexInSubways);
 
 #endif

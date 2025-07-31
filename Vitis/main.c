@@ -168,7 +168,7 @@ int main() {
 
             for (int i = 0; i < subways.size; i++) {
                 if (((subways.data[i].yBackground + 8) / 8) - 8 == rmvTileY) {
-                    deleteSubway(&subways, subways.data[i].actorIndex, i);
+                    deleteSubway(&subways, i);
                     i--; // Adjust index after deletion
                 }
             }
@@ -272,12 +272,45 @@ int main() {
             }
         }
 
+        for (int i = 0; i < subways.size; i++) {
+            for (int j = 0; j < mainActor.size; j++) {
+                if (!(subways.data[i].xBackground + ACTOR_WIDTH <= mainActor.data[j].xBackground
+                    || mainActor.data[j].xBackground + ACTOR_WIDTH <= subways.data[i].xBackground
+                    || subways.data[i].yBackground + ACTOR_HEIGHT <= mainActor.data[j].yBackground
+                    || mainActor.data[j].yBackground + ACTOR_HEIGHT <= subways.data[i].yBackground)) {
+                        deleteSubway(&subways, i);  
+                }
+            }
+        }
+
         viewportY--;
 		if (viewportY < 0) {
 			viewportY += 1024; // Wrap around if it goes below 0
 		}
 
         for (int i = 0; i < subways.size; i++) {
+            if (viewportY % 8 == 0) {
+                    subways.data[i].tile += 1;
+                if (subways.data[i].tile > 7) {
+                    subways.data[i].tile = 4;
+                }
+                if (subways.data[i].tile == 7) {
+                    if (subways.data[i].flipX) {
+                        subways.data[i].flipX = false;
+                    } else {
+                        subways.data[i].flipX = true;
+                    }
+                    if (subways.data[i].flipY) {
+                        subways.data[i].flipY = false;
+                    } else {
+                        subways.data[i].flipY = true;
+                    }
+                }
+
+                setActTile = cmdGenSetActTile(subways.data[i].actorIndex, true, subways.data[i].tile, true, subways.data[i].flipX, true, subways.data[i].flipY);
+                MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
+            }
+
             subways.data[i].yViewport++;
             setActPos = cmdGenSetActPos(subways.data[i].actorIndex, true, subways.data[i].xViewport, subways.data[i].yViewport, false, subways.data[i].flipX, false, subways.data[i].flipY);
             MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);

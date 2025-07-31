@@ -164,7 +164,7 @@ void generateSubway(int tileX, int tileY, Actor* subway, int disponibleSubway) {
     subway->flipY = false;
     subway->xViewport = ((tileX * 8) - 4) + 28;
     subway->yViewport = -192 - 8;
-    subway->xBackground = tileX * 8;
+    subway->xBackground = tileX * 8 + 28;
     subway->yBackground = tileY * 8 - 8;
     setActTile = cmdGenSetActTile(subway->actorIndex, true, subway->tile, true, subway->flipX, true, subway->flipY);
     MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
@@ -172,20 +172,30 @@ void generateSubway(int tileX, int tileY, Actor* subway, int disponibleSubway) {
     MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);
 }
 
-void deleteSubway(ActorArray* subways, int actorIndex, int indexInSubways) {
+void deleteSubway(ActorArray* subways, int indexInSubways) {
     int setActTile;
-
-    // Set the subway tile to empty
-    setActTile = cmdGenSetActTile(actorIndex, true, 8, false, false, false, false);
-    MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
-
-    // Remove the subway from the array
-    deleteActorAt(subways, indexInSubways);
+    int setActPos;
 
     // Shift the remaining subways
-    for (int i = actorIndex; i < subways->size; i++) {
-        subways->data[i] = subways->data[i + 1];
+    for (int i = indexInSubways; i < subways->size - 1; i++) {
+        subways->data[i].tile = subways->data[i + 1].tile;
+        subways->data[i].flipX = subways->data[i + 1].flipX;
+        subways->data[i].flipY = subways->data[i + 1].flipY;
+        subways->data[i].xViewport = subways->data[i + 1].xViewport;
+        subways->data[i].yViewport = subways->data[i + 1].yViewport;
+        subways->data[i].xBackground = subways->data[i + 1].xBackground;
+        subways->data[i].yBackground = subways->data[i + 1].yBackground;
+
         setActTile = cmdGenSetActTile(subways->data[i].actorIndex, true, subways->data[i].tile, true, subways->data[i].flipX, true, subways->data[i].flipY);
         MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
     }
+
+    // Set the subway tile to empty
+    setActTile = cmdGenSetActTile(subways->data[subways->size - 1].actorIndex, true, 8, false, false, false, false);
+    MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
+    setActPos = cmdGenSetActPos(subways->data[subways->size - 1].actorIndex, true, 0, 0, false, false, false, false);
+    MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);
+
+    // Remove the subway from the array
+    deleteActorAt(subways, subways->size - 1);
 }
