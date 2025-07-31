@@ -125,7 +125,7 @@ int main() {
         }
 
         if (flag == 1) {
-            int obstacleMask = generateObstacleMask(globalCounter/100000.0f, &numLines, 0);
+            int obstacleMask = generateObstacleMask(globalCounter/50000.0f, &numLines, 0);
             jumpStartX = ((13 - numLines) / 2) * COL_WIDTH;
             tileX = jumpStartX;
             while (currentLineObstacles < numLines) {
