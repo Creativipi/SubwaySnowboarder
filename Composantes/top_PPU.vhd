@@ -71,7 +71,7 @@ component Controller is
     o_AM_newpos_x : out STD_LOGIC_VECTOR (9 downto 0);
     o_AM_newpos_y : out STD_LOGIC_VECTOR (9 downto 0);
     o_AM_act_id : out STD_LOGIC_VECTOR (2 downto 0);
-    o_AM_tile_id : out STD_LOGIC_VECTOR (2 downto 0);
+    o_AM_tile_id : out STD_LOGIC_VECTOR (3 downto 0);
 
     o_AM_flip_x : out STD_LOGIC;
     o_AM_flip_y : out STD_LOGIC;
@@ -80,6 +80,11 @@ component Controller is
     o_AM_ch_tile_id : out STD_LOGIC;
     o_AM_ch_flip_x : out STD_LOGIC;
     o_AM_ch_flip_y : out STD_LOGIC;
+    o_AM_ch_cc : out std_logic_vector (3 downto 0);
+    o_AM_ch_x : out std_logic_vector (3 downto 0);
+    o_AM_ch_y : out std_logic_vector (3 downto 0);
+    o_AM_ch_we : out std_logic;
+    o_AM_tile_write : out std_logic_vector (3 downto 0);
     --MuxBackActor
     o_MBA_act_en : out STD_LOGIC;
     --ColorConvertor
@@ -87,20 +92,6 @@ component Controller is
     o_CC_new_RBG : out STD_LOGIC_VECTOR (23 downto 0);
     o_CC_ch_color : out STD_LOGIC
     
-  );
-end component;
-
-
-component TestPatternGenerator is
-  port ( 
-    i_clk : in std_logic;
-    i_rstn : in std_logic;
-    i_axis_tready : in std_logic; -- input (1 when you are ready to render, 0 to stall the render)
-    o_axis_tuser : out std_logic; -- start of frame
-    o_axis_tlast : out std_logic; -- end of frame
-    o_axis_tvalid : out std_logic; -- outputting valid data
-    o_x : out std_logic_vector (9 downto 0);
-    o_y : out std_logic_vector (8 downto 0)
   );
 end component;
 
@@ -146,7 +137,7 @@ Port (     i_view_x : in STD_LOGIC_VECTOR (9 downto 0);
            i_act_id : in STD_LOGIC_VECTOR (2 downto 0);
            i_newpos_x : in STD_LOGIC_VECTOR (9 downto 0);
            i_newpos_y : in STD_LOGIC_VECTOR (9 downto 0);
-           i_tile_id : in STD_LOGIC_VECTOR (2 downto 0);
+           i_tile_id : in STD_LOGIC_VECTOR (3 downto 0);
            i_flip_x : in STD_LOGIC;
            i_flip_y : in STD_LOGIC;
            i_ch_setpos : in STD_LOGIC;
@@ -156,16 +147,16 @@ Port (     i_view_x : in STD_LOGIC_VECTOR (9 downto 0);
            i_ch_flipY : in STD_LOGIC;
            i_ch_x : in std_logic_vector(3 downto 0);
            i_ch_y : in std_logic_vector(3 downto 0);
-           --i_ch_cc : in std_logic_vector (3 downto 0);
-           --i_ch_we : in std_logic;
+           i_ch_cc : in std_logic_vector (3 downto 0);
+           i_ch_we : in std_logic;
            i_clk : in STD_LOGIC;
            --o_flip_x : out STD_LOGIC;
            --o_flip_y : out STD_LOGIC;
            --o_pix_x : out STD_LOGIC_VECTOR (3 downto 0);
            --o_pix_y : out STD_LOGIC_VECTOR (3 downto 0);
            
-           i_tile_id_write : in std_logic_vector (2 downto 0);
-           o_tile_id : out STD_LOGIC_VECTOR (2 downto 0);
+           i_tile_id_write : in std_logic_vector (3 downto 0);
+           o_tile_id : out STD_LOGIC_VECTOR (3 downto 0);
            o_is_actor_present : out std_logic;
            o_colorCode : out STD_LOGIC_VECTOR (3 downto 0));
 end component;
@@ -216,7 +207,7 @@ end component;
     signal Cont_AM_act_id : STD_LOGIC_VECTOR (2 downto 0);
     signal Cont_AM_newpos_x : STD_LOGIC_VECTOR (9 downto 0);
     signal Cont_AM_newpos_y : STD_LOGIC_VECTOR (9 downto 0);
-    signal Cont_AM_tile_id : STD_LOGIC_VECTOR (2 downto 0);
+    signal Cont_AM_tile_id : STD_LOGIC_VECTOR (3 downto 0);
     signal Cont_AM_flip_x : STD_LOGIC;
     signal Cont_AM_flip_y : STD_LOGIC;
     signal Cont_AM_ch_setpos : STD_LOGIC;
@@ -224,11 +215,16 @@ end component;
     signal Cont_AM_ch_tile_id : STD_LOGIC;
     signal Cont_AM_ch_flip_X : STD_LOGIC;
     signal Cont_AM_ch_flip_Y : STD_LOGIC;
+    signal CONT_AM_ch_x : std_logic_vector (3 downto 0);
+    signal CONT_AM_ch_y : std_logic_vector (3 downto 0);
+    signal CONT_AM_ch_cc : std_logic_vector (3 downto 0);
+    signal CONT_AM_ch_we : std_logic;
+    signal CONT_AM_tile_id_write : std_logic_vector (3 downto 0);
     -- TileRenderActor Inputs
     signal TRA_NewPosX : STD_LOGIC_VECTOR (9 downto 0);
     signal TRA_NewPosY : STD_LOGIC_VECTOR (9 downto 0);
     signal TRA_act_id : std_logic_vector (2 downto 0);
-    signal TRA_i_tile_id_write : std_logic_vector (2 downto 0);
+    signal TRA_i_tile_id_write : std_logic_vector (3 downto 0);
     
     --MuxBackActor
     signal Cont_MBA_act_en : STD_LOGIC;
@@ -263,14 +259,12 @@ end component;
     signal TBB_color_code : std_logic_vector(3 downto 0);
     
     --Sorties ActorMgmt
-    signal AM_tile_id : STD_LOGIC_VECTOR (2 downto 0);
+    signal AM_tile_id : STD_LOGIC_VECTOR (3 downto 0);
     signal AM_flip_x : STD_LOGIC;
     signal AM_flip_y : STD_LOGIC;
     signal AM_pix_x : STD_LOGIC_VECTOR (3 downto 0);
     signal AM_pix_y : STD_LOGIC_VECTOR (3 downto 0);
     signal AM_is_actor_present : STD_LOGIC;
-    signal AM_ch_x : std_logic_vector (3 downto 0);
-    signal AM_ch_y : std_logic_vector (3 downto 0);
 
     
     --Sortie TuileBufActor
@@ -321,6 +315,11 @@ Controller_0: component Controller
       o_AM_ch_tile_id => Cont_AM_ch_tile_id,
       o_AM_ch_flip_x => Cont_AM_ch_flip_X,
       o_AM_ch_flip_y => Cont_AM_ch_flip_Y,
+      o_AM_ch_cc => Cont_AM_ch_cc,
+      o_AM_ch_x => Cont_AM_ch_x,
+      o_AM_ch_y => Cont_AM_ch_y,
+      o_AM_ch_we => CONT_AM_ch_we,
+      o_AM_tile_write => CONT_AM_tile_id_write,
       --MuxBackActor
       o_MBA_act_en => Cont_MBA_act_en,
       --ColorConvertor
@@ -377,10 +376,12 @@ port map(
            i_ch_tile_id => Cont_AM_ch_tile_id,
            i_ch_flipX => Cont_AM_ch_flip_X,
            i_ch_flipY => Cont_AM_ch_flip_Y,
-           i_ch_x => AM_ch_x,
-           i_ch_y => AM_ch_y,
+           i_ch_x => CONT_AM_ch_x,
+           i_ch_y => CONT_AM_ch_y,
+           i_ch_we => CONT_AM_ch_we,
+           i_ch_cc => CONT_AM_ch_cc,
            i_clk => i_clk,
-           i_tile_id_write => TRA_i_tile_id_write,
+           i_tile_id_write => CONT_AM_tile_id_write,
            o_tile_id => AM_tile_id,
            o_is_actor_present => AM_is_actor_present,
            o_colorCode => TBA_color_code

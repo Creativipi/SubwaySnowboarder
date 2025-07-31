@@ -66,20 +66,18 @@ begin
                 write_index := i_row & i_col;
                 --new_data := tile_data_map(to_integer(unsigned(write_index)));
                 new_data := (others => '0');
-                new_data(4 downto 0) := i_tile_id;
-                new_data(5) := i_flip_y;
                 new_data(6) := '0';
                 new_data(7) := '0';
 
                 -- Update tile_id if required
---                if i_ch_tile_id = '1' then
---                    new_data(4 downto 0) := i_tile_id;
---                end if;
+                if i_ch_tile_id = '1' then
+                    new_data(4 downto 0) := i_tile_id;
+                end if;
 
 --                -- Update flip_y if required
---                if i_ch_flip_y = '1' then
---                    new_data(5) := i_flip_y;
---                end if;
+                if i_ch_flip_y = '1' then
+                    new_data(5) := i_flip_y;
+                end if;
 
                 -- Write back to BRAM
                 tile_data_map(to_integer(unsigned(write_index))) <= new_data;
