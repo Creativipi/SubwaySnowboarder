@@ -9,6 +9,7 @@ void initializeActors(ActorArray* mainActor) {
     int setActTile;
     int setActPos;
 
+    actor1.actorIndex = 1;
     actor1.tile = 2;
     actor1.flipX = false;
     actor1.flipY = false;
@@ -16,11 +17,12 @@ void initializeActors(ActorArray* mainActor) {
     actor1.yViewport = (VIEWPORT_HEIGHT * (4.0 / 5.0) - 16) - 1;
     actor1.xBackground = actor1.xViewport + 4;
     actor1.yBackground = actor1.yViewport - 1;
-    setActTile = cmdGenSetActTile(1, true, actor1.tile, true, actor1.flipX, true, actor1.flipY);
+    setActTile = cmdGenSetActTile(actor1.actorIndex, true, actor1.tile, true, actor1.flipX, true, actor1.flipY);
     MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
-    setActPos = cmdGenSetActPos(1, true, actor1.xViewport, actor1.yViewport, true, actor1.flipX, true, actor1.flipY);
+    setActPos = cmdGenSetActPos(actor1.actorIndex, true, actor1.xViewport, actor1.yViewport, true, actor1.flipX, true, actor1.flipY);
     MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);
 
+    actor0.actorIndex = 0;
     actor0.tile = 3;
     actor0.flipX = false;
     actor0.flipY = false;
@@ -28,9 +30,9 @@ void initializeActors(ActorArray* mainActor) {
     actor0.yViewport = (VIEWPORT_HEIGHT * (4.0 / 5.0)) - 1;
     actor0.xBackground = actor0.xViewport + 4;
     actor0.yBackground = actor0.yViewport - 1;
-    setActTile = cmdGenSetActTile(0, true, actor0.tile, true, actor0.flipX, true, actor0.flipY);
+    setActTile = cmdGenSetActTile(actor0.actorIndex, true, actor0.tile, true, actor0.flipX, true, actor0.flipY);
     MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
-    setActPos = cmdGenSetActPos(0, true, actor0.xViewport, actor0.yViewport, true, actor0.flipX, true, actor0.flipY);
+    setActPos = cmdGenSetActPos(actor0.actorIndex, true, actor0.xViewport, actor0.yViewport, true, actor0.flipX, true, actor0.flipY);
     MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);
 
     pushActor(mainActor, actor1); // Add the first actor to the array
@@ -142,13 +144,13 @@ void moveMainActor(int direction, int numTimes, bool triedTurning, ActorArray* m
             break;
     }
 
-    setActTile = cmdGenSetActTile(1, true, mainActor->data[0].tile, true, mainActor->data[0].flipX, true, mainActor->data[0].flipY);
+    setActTile = cmdGenSetActTile(mainActor->data[0].actorIndex, true, mainActor->data[0].tile, true, mainActor->data[0].flipX, true, mainActor->data[0].flipY);
     MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
-    setActPos = cmdGenSetActPos(1, true, mainActor->data[0].xViewport, mainActor->data[0].yViewport, false, mainActor->data[0].flipX, false, mainActor->data[0].flipY);
+    setActPos = cmdGenSetActPos(mainActor->data[0].actorIndex, true, mainActor->data[0].xViewport, mainActor->data[0].yViewport, false, mainActor->data[0].flipX, false, mainActor->data[0].flipY);
     MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);
-    setActTile = cmdGenSetActTile(0, true, mainActor->data[1].tile, true, mainActor->data[1].flipX, true, mainActor->data[1].flipY);
+    setActTile = cmdGenSetActTile(mainActor->data[1].actorIndex, true, mainActor->data[1].tile, true, mainActor->data[1].flipX, true, mainActor->data[1].flipY);
     MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
-    setActPos = cmdGenSetActPos(0, true, mainActor->data[1].xViewport, mainActor->data[1].yViewport, false, mainActor->data[1].flipX, false, mainActor->data[1].flipY);
+    setActPos = cmdGenSetActPos(mainActor->data[1].actorIndex, true, mainActor->data[1].xViewport, mainActor->data[1].yViewport, false, mainActor->data[1].flipX, false, mainActor->data[1].flipY);
     MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);
 }
 
@@ -156,15 +158,34 @@ void generateSubway(int tileX, int tileY, Actor* subway, int disponibleSubway) {
     int setActTile;
     int setActPos;
 
+    subway->actorIndex = disponibleSubway;
     subway->tile = 4;
     subway->flipX = false;
     subway->flipY = false;
-    subway->xViewport = (tileX * 8) - 4;
-    subway->yViewport = -64;
+    subway->xViewport = ((tileX * 8) - 4) + 28;
+    subway->yViewport = -192 - 8;
     subway->xBackground = tileX * 8;
-    subway->yBackground = tileY * 8;
-    setActTile = cmdGenSetActTile(disponibleSubway, true, subway->tile, true, subway->flipX, true, subway->flipY);
+    subway->yBackground = tileY * 8 - 8;
+    setActTile = cmdGenSetActTile(subway->actorIndex, true, subway->tile, true, subway->flipX, true, subway->flipY);
     MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
-    setActPos = cmdGenSetActPos(disponibleSubway, true, subway->xViewport, subway->yViewport, true, subway->flipX, true, subway->flipY);
+    setActPos = cmdGenSetActPos(subway->actorIndex, true, subway->xViewport, subway->yViewport, true, subway->flipX, true, subway->flipY);
     MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);
+}
+
+void deleteSubway(ActorArray* subways, int actorIndex, int indexInSubways) {
+    int setActTile;
+
+    // Set the subway tile to empty
+    setActTile = cmdGenSetActTile(actorIndex, true, 8, false, false, false, false);
+    MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
+
+    // Remove the subway from the array
+    deleteActorAt(subways, indexInSubways);
+
+    // Shift the remaining subways
+    for (int i = actorIndex; i < subways->size; i++) {
+        subways->data[i] = subways->data[i + 1];
+        setActTile = cmdGenSetActTile(subways->data[i].actorIndex, true, subways->data[i].tile, true, subways->data[i].flipX, true, subways->data[i].flipY);
+        MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
+    }
 }

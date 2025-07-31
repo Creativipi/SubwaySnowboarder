@@ -86,6 +86,7 @@ int main() {
     bool wasHit = false;
     int immunityCounter = 0;
     int setActTile;
+    int setActPos;
 
     ActorArray mainActor;
     initActorArray(&mainActor, 2); // Initialize the main actor array with a capacity
@@ -118,6 +119,7 @@ int main() {
 
             flag = 1;
             currentLineObstacles = 0;
+            currentLineSubways = 0;
         } else {
             flag = 0;
         }
@@ -148,29 +150,28 @@ int main() {
                 }
             }
 
-            // int subwayMask = generateSubwayMask(numLines);
-            // tileX = jumpStartX;
-            // while (currentLineSubways < numLines) {
-            //     int bitIndex = (numLines - 1) - currentLineSubways;
-            //     bool doGenerateSubway = (subwayMask >> bitIndex) & 1;
+            int subwayMask = generateSubwayMask(numLines);
+            tileX = jumpStartX;
+            while (currentLineSubways < numLines) {
+                int bitIndex = (numLines - 1) - currentLineSubways;
+                bool doGenerateSubway = (subwayMask >> bitIndex) & 1;
 
-            //     if (doGenerateSubway) {
-            //         Actor subway;
-            //         generateSubway(tileX, newTileY + 64, &subway, subways.size + 1);
-            //         pushActor(&subways, subway);
-            //     }
+                if (doGenerateSubway) {
+                    Actor subway;
+                    generateSubway(tileX, newTileY + 8, &subway, subways.size + 2);
+                    pushActor(&subways, subway);
+                }
 
-            //     tileX += COL_WIDTH;
-            //     currentLineSubways++;
-            // }
+                tileX += COL_WIDTH;
+                currentLineSubways++;
+            }
 
-            // for (int i = 0; i < subways.size; i++) {
-            //     if (subways.data[i].yBackground / 8 == rmvTileY) {
-            //         // deleteObstacle(hazards.data[i].tileX, hazards.data[i].rmvTileY);
-            //         deleteActorAt(&subways, i);
-            //         i--; // Adjust index after deletion
-            //     }
-            // }
+            for (int i = 0; i < subways.size; i++) {
+                if (((subways.data[i].yBackground + 8) / 8) - 8 == rmvTileY) {
+                    deleteSubway(&subways, subways.data[i].actorIndex, i);
+                    i--; // Adjust index after deletion
+                }
+            }
         }
 
         if (viewportY % TILE_SIZE == 0) {
@@ -251,19 +252,19 @@ int main() {
                 }
             }
         } else {
-            if (immunityCounter < 20 || (immunityCounter > 39 && immunityCounter < 60) || (immunityCounter > 79 && immunityCounter < 100)) {
-                setActTile = cmdGenSetActTile(1, true, 8, false, false, false, false);
+            if (immunityCounter < 15 || (immunityCounter > 29 && immunityCounter < 45) || (immunityCounter > 59 && immunityCounter < 75)) {
+                setActTile = cmdGenSetActTile(mainActor.data[0].actorIndex, true, 8, false, false, false, false);
                 MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
-                setActTile = cmdGenSetActTile(0, true, 8, false, false, false, false);
+                setActTile = cmdGenSetActTile(mainActor.data[1].actorIndex, true, 8, false, false, false, false);
                 MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
-            } else if ((immunityCounter > 19 && immunityCounter < 40) || (immunityCounter > 59 && immunityCounter < 80) || immunityCounter > 99) {
-                setActTile = cmdGenSetActTile(1, true, mainActor.data[0].tile, false, false, false, false);
+            } else if ((immunityCounter > 14 && immunityCounter < 30) || (immunityCounter > 44 && immunityCounter < 60) || immunityCounter > 74) {
+                setActTile = cmdGenSetActTile(mainActor.data[0].actorIndex, true, mainActor.data[0].tile, false, false, false, false);
                 MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
-                setActTile = cmdGenSetActTile(0, true, mainActor.data[1].tile, false, false, false, false);
+                setActTile = cmdGenSetActTile(mainActor.data[1].actorIndex, true, mainActor.data[1].tile, false, false, false, false);
                 MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActTile);
             }
 
-            if (immunityCounter > 99) {
+            if (immunityCounter > 74) {
                 immunityCounter = 0; // Reset immunity counter after a certain time
                 wasHit = false; // Reset hit status
             } else {
@@ -275,6 +276,12 @@ int main() {
 		if (viewportY < 0) {
 			viewportY += 1024; // Wrap around if it goes below 0
 		}
+
+        for (int i = 0; i < subways.size; i++) {
+            subways.data[i].yViewport++;
+            setActPos = cmdGenSetActPos(subways.data[i].actorIndex, true, subways.data[i].xViewport, subways.data[i].yViewport, false, subways.data[i].flipX, false, subways.data[i].flipY);
+            MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);
+        }
 
         for (int i = 0; i < mainActor.size; i++) {
             mainActor.data[i].yBackground--;

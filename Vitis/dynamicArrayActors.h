@@ -6,6 +6,7 @@
 #include <stdbool.h>
 
 typedef struct {
+    int actorIndex;
     int tile;
     bool flipX; // Flip horizontally
     bool flipY; // Flip vertically
