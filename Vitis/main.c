@@ -55,6 +55,8 @@ int main() {
     const int COL_WIDTH = 6; // Width of each column in tiles
     const int SPACE_BETWEEN_OBSTACLES_ROWS = 128; // Space between obstacles in rows in pixels, must be a multiple of 2
     const int SPACE_BETWEEN_COLUMN_DIVIDERS_SPAWN_AND_MAIN_ACTOR = 400; // Space between column dividers's spawn and main actor in pixels
+    const int ACTOR_WIDTH = 16;
+    const int ACTOR_HEIGHT = 16;
 
     int currentLineObstacles = 0;
 	int flag = 0;
@@ -80,6 +82,10 @@ int main() {
     int numTimesMoveMainActor = 0;
     int directionMainActor;
     bool triedTurning = false;
+
+    bool wasHit = false;
+    int immunityCounter = 0;
+    int setActPos;
 
     ActorArray mainActor;
     initActorArray(&mainActor, 2); // Initialize the actor array with a capacity
@@ -128,7 +134,7 @@ int main() {
                 if (doGenerateObstacle) {
                     Positions obstacleHitZone;
                     generateObstacle(tileX, newTileY, &obstacleHitZone);
-                    push(&hazards, obstacleHitZone);
+                    pushHazard(&hazards, obstacleHitZone);
                 }
 
                 currentLineObstacles++;
@@ -203,16 +209,65 @@ int main() {
 
             moveMainActor(directionMainActor, numTimesMoveMainActor, triedTurning, &mainActor);
             numTimesMoveMainActor++;
-            if (numTimesMoveMainActor > 9) {
+            if (numTimesMoveMainActor > 17) {
                 numTimesMoveMainActor = 0;
                 triedTurning = false;
             }
         }
-        
+
+        if (!wasHit) {
+            for (int i = 0; i < hazards.size; i++) {
+                for (int j = 0; j < mainActor.size; j++) {
+                    if (!(hazards.data[i].x + hazardDimensions[hazards.data[i].hazardType].width <= mainActor.data[j].xBackground
+                        || mainActor.data[j].xBackground + ACTOR_WIDTH <= hazards.data[i].x
+                        || hazards.data[i].y + hazardDimensions[hazards.data[i].hazardType].height <= mainActor.data[j].yBackground
+                        || mainActor.data[j].yBackground + ACTOR_HEIGHT <= hazards.data[i].y)) { // Checks for collision
+                            wasHit = true;
+                    }
+                }
+            }
+        } else {
+            switch (immunityCounter) {
+            case 0:
+            case 40:
+            case 80:
+                setActPos = cmdGenSetActPos(1, true, 700, 700, false, false, false, false);
+                MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);
+                setActPos = cmdGenSetActPos(0, true, 700, 700, false, false, false, false);
+                MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);
+                break;
+            case 20:
+            case 60:
+            case 100:
+                setActPos = cmdGenSetActPos(1, true, mainActor.data[0].xViewport, mainActor.data[0].yViewport, false, false, false, false);
+                MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);
+                setActPos = cmdGenSetActPos(0, true, mainActor.data[1].xViewport, mainActor.data[1].yViewport, false, false, false, false);
+                MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setActPos);
+                break;
+            default:
+                break;
+            }
+
+            if (immunityCounter > 99) {
+                immunityCounter = 0; // Reset immunity counter after a certain time
+            } else {
+                immunityCounter++;
+                wasHit = false; // Reset hit status
+            }
+        }
+
         viewportY--;
 		if (viewportY < 0) {
-			viewportY = 1023;
+			viewportY += 1024; // Wrap around if it goes below 0
 		}
+
+        for (int i = 0; i < mainActor.size; i++) {
+            mainActor.data[i].yBackground--;
+            if (mainActor.data[i].yBackground < 0) {
+                mainActor.data[i].yBackground += 1024; // Wrap around if it goes below 0
+            }
+        }
+
         globalCounter++;
 
         usleep(10000);

@@ -15,7 +15,7 @@ void resizeArray(PositionArray* arr, int newCapacity){
     arr->capacity = newCapacity;
 }
 
-void push(PositionArray* arr, Positions pos){
+void pushHazard(PositionArray* arr, Positions pos){
     if (arr -> size >= arr->capacity){
         resizeArray(arr, arr->capacity * 2);
     }

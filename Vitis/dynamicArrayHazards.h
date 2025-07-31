@@ -44,7 +44,7 @@ static const Dimensions hazardDimensions[] = {
 Dimensions getHazardDimensions(HazardType hazard);
 void initArray(PositionArray* arr, int initialCapacity);
 void resizeArray(PositionArray* arr, int newCapacity);
-void push(PositionArray* arr, Positions pos);
+void pushHazard(PositionArray* arr, Positions pos);
 void deleteAt(PositionArray* arr, int index);
 void freeArray(PositionArray* arr);
 

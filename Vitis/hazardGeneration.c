@@ -13,8 +13,8 @@ void generateObstacle(int tileX, int tileY, Positions* obstacleHitZone) {
         setBackTile = cmdGenSetBackTile(18, true, tileX + 4, tileY, false, false);
         MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
 
-        obstacleHitZone->x = tileX + 4;
-        obstacleHitZone->y = tileY;
+        obstacleHitZone->x = tileX * 8 + 4;
+        obstacleHitZone->y = tileY * 8;
         break;
         
     case Big_Tree:
