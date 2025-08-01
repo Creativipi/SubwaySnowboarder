@@ -102,3 +102,12 @@ void deleteObstacle(int tileX, int tileY) {
         }
     }
 }
+
+void resetBackground() {
+    for (int i = 0; i < 128; i ++) {
+        for (int j = 0; j < 128; j ++) {
+            int setBackTile = cmdGenSetBackTile(0, true, i, j, false, false);
+            MYCOLORREGISTER_mWriteReg(XPAR_MYCOLORREGISTER_0_S00_AXI_BASEADDR, 0, setBackTile);
+        }
+    }
+}

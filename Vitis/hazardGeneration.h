@@ -12,5 +12,6 @@
 
 void generateObstacle(int tileX, int tileY, Positions* obstacle);
 void deleteObstacle(int tileX, int tileY);
+void resetBackground();
 
 #endif
